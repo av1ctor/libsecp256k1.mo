@@ -159,9 +159,9 @@ module {
     /// The function is unsafe because incorrect value of `pre_g` can lead to
     /// crypto logic failure. You most likely do not want to use this function,
     /// but `ECMultGenContext::new_boxed`.
-    public func new_from_raw(prec: [var [var AffineStorage]]): ECMultGenContext {
+    //public func new_from_raw(prec: [var [var AffineStorage]]): ECMultGenContext {
 
-    };
+    //};
 
 
 
