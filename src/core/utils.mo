@@ -66,4 +66,16 @@ module {
 
         return Buffer.toArray(res);
     };
+
+    public func array_mut_ref<T>(arr: [var T], offset: Nat, size: Nat): [var T] {
+        let res = Buffer.Buffer<T>(size);
+
+        var i = offset;
+        while(i < offset + size) {
+            res.add(arr[i]);
+            i += 1;
+        };
+
+        return Buffer.toVarArray(res);
+    };
 };

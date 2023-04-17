@@ -5,12 +5,42 @@ import Error "core/error";
 import E "mo:base/Error";
 import Scalar "core/scalar";
 import Group "core/group";
+import Array "mo:base/Array";
 
-module {
+module PublicKey {
     public class PublicKey(
-        affine_: Group.Affine
+        affine: Group.Affine
     ) {
-        public let affine = affine_;
+        public func serialize(
+        ): [Nat8] {
+            let ret = Array.init<Nat8>(65, 0);
+            var elem = affine;
+
+            elem.x.normalize_var();
+            elem.y.normalize_var();
+            elem.x.fill_b32(Utils.array_mut_ref(ret, 1, 32));
+            elem.y.fill_b32(Utils.array_mut_ref(ret, 33, 32));
+            ret[0] := Utils.TAG_PUBKEY_FULL;
+
+            return Array.freeze(ret);
+        };
+
+        public func serialize_compressed(
+        ): [Nat8] {
+            let ret = Array.init<Nat8>(33, 0);
+            var elem = affine;
+
+            elem.x.normalize_var();
+            elem.y.normalize_var();
+            elem.x.fill_b32(Utils.array_mut_ref(ret, 1, 32));
+            ret[0] := if(elem.y.is_odd()) {
+                Utils.TAG_PUBKEY_ODD
+            } else {
+                Utils.TAG_PUBKEY_EVEN
+            };
+
+            return Array.freeze(ret);
+        }
     };
 
     public func parse(
@@ -66,4 +96,6 @@ module {
             #err(#InvalidPublicKey)
         };
     };
+
+    
 };
