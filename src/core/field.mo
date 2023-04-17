@@ -763,26 +763,26 @@ module {
             var t6: Nat32 = 0;
             var t7: Nat32 = 0;
 
-            assert(a.n[0] == 30);
-            assert(a.n[1] == 30);
-            assert(a.n[2] == 30);
-            assert(a.n[3] == 30);
-            assert(a.n[4] == 30);
-            assert(a.n[5] == 30);
-            assert(a.n[6] == 30);
-            assert(a.n[7] == 30);
-            assert(a.n[8] == 30);
-            assert(a.n[9] == 26);
-            assert(b.n[0] == 30);
-            assert(b.n[1] == 30);
-            assert(b.n[2] == 30);
-            assert(b.n[3] == 30);
-            assert(b.n[4] == 30);
-            assert(b.n[5] == 30);
-            assert(b.n[6] == 30);
-            assert(b.n[7] == 30);
-            assert(b.n[8] == 30);
-            assert(b.n[9] == 26);
+            assert(a.n[0] >> 30 == 0);
+            assert(a.n[1] >> 30 == 0);
+            assert(a.n[2] >> 30 == 0);
+            assert(a.n[3] >> 30 == 0);
+            assert(a.n[4] >> 30 == 0);
+            assert(a.n[5] >> 30 == 0);
+            assert(a.n[6] >> 30 == 0);
+            assert(a.n[7] >> 30 == 0);
+            assert(a.n[8] >> 30 == 0);
+            assert(a.n[9] >> 26 == 0);
+            assert(b.n[0] >> 30 == 0);
+            assert(b.n[1] >> 30 == 0);
+            assert(b.n[2] >> 30 == 0);
+            assert(b.n[3] >> 30 == 0);
+            assert(b.n[4] >> 30 == 0);
+            assert(b.n[5] >> 30 == 0);
+            assert(b.n[6] >> 30 == 0);
+            assert(b.n[7] >> 30 == 0);
+            assert(b.n[8] >> 30 == 0);
+            assert(b.n[9] >> 26 == 0);
 
             // [... a b c] is a shorthand for ... + a<<52 + b<<26 + c<<0 mod n.
             // px is a shorthand for sum(a[i]*b[x-i], i=0..x).
@@ -821,12 +821,12 @@ module {
             /* [d 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
             t9 := u64u32(d & M);
             d >>= 26;
-            assert(t9 == 26);
-            assert(d == 38);
+            assert(t9 >> 26 == 0);
+            assert(d >> 38 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
 
             c := u64(a.n[0]) * u64(b.n[0]);
-            assert(c == 60);
+            assert(c >> 60 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p9 0 0 0 0 0 0 0 0 p0] */
 
             d := wrapping_add(
@@ -857,21 +857,21 @@ module {
                     ), 
                     u64(a.n[9]) * u64(b.n[1])
                 );
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             v0 := d & M;
             d >>= 26;
             c += v0 * R0;
-            assert(v0 == 26);
-            assert(d == 37);
-            assert(c == 61);
+            assert(v0 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 61 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 0 c-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             t0 := u64u32(c & M);
             c >>= 26;
             c += v0 * R1;
 
-            assert(t0 == 26);
-            assert(c == 37);
+            assert(t0 >> 26 == 0);
+            assert(c >> 37 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 c-u0*R1 t0-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
 
@@ -882,7 +882,7 @@ module {
                     ),
                     u64(a.n[1]) * u64(b.n[0])
                 );
-            assert(c == 62);
+            assert(c >> 62 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 p1 p0] */
 
             d := wrapping_add(
@@ -911,20 +911,20 @@ module {
                     u64(a.n[9]) * u64(b.n[2])
                 );
 
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             v1 := d & M;
             d >>= 26;
             c += v1 * R0;
-            assert(v1 == 26);
-            assert(d == 37);
-            assert(c == 63);
+            assert(v1 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 63 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 0 c-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             t1 := u64u32(c & M);
             c >>= 26;
             c += v1 * R1;
-            assert(t1 == 26);
-            assert(c == 38);
+            assert(t1 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 c-u1*R1 t1-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
 
@@ -939,7 +939,7 @@ module {
                     u64(a.n[2]) * u64(b.n[0])
                 );
 
-            assert(c == 62);
+            assert(c >> 62 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
 
             d := wrapping_add(
@@ -965,20 +965,20 @@ module {
                     u64(a.n[9]) * u64(b.n[3])
                 );
 
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             v2 := d & M;
             d >>= 26;
             c += v2 * R0;
-            assert(v2 == 26);
-            assert(d == 37);
-            assert(c == 63);
+            assert(v2 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 63 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 0 c-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             t2 := u64u32(c & M) ;
             c >>= 26;
             c += v2 * R1;
-            assert(t2 == 26);
-            assert(c == 38);
+            assert(t2 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 c-u2*R1 t2-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
 
@@ -995,7 +995,7 @@ module {
                     ),
                     u64(a.n[3]) * u64(b.n[0])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1017,20 +1017,20 @@ module {
                     u64(a.n[9]) * u64(b.n[4])
                 );
 
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             v3 := d & M;
             d >>= 26;
             c += v3 * R0;
-            assert(v3 == 26);
-            assert(d == 37);
+            assert(v3 >> 26 == 0);
+            assert(d >> 37 == 0);
             // assert(c, 64);
             /* [d u3 0 0 0 t9 0 0 0 0 0 c-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             t3 := u64u32(c & M);
             c >>= 26;
             c += v3 * R1;
-            assert(t3 == 26);
-            assert(c == 39);
+            assert(t3 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u3 0 0 0 t9 0 0 0 0 c-u3*R1 t3-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
 
@@ -1051,7 +1051,7 @@ module {
                     u64(a.n[4]) * u64(b.n[0])
                 );
 
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1070,20 +1070,20 @@ module {
                     u64(a.n[9]) * u64(b.n[5])
                 );
 
-            assert(d == 62);
+            assert(d >> 62 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             v4 := d & M;
             d >>= 26;
             c += v4 * R0;
-            assert(v4 == 26);
-            assert(d == 36);
+            assert(v4 >> 26 == 0);
+            assert(d >> 36 == 0);
             // assert(c, 64);
             /* [d u4 0 0 0 0 t9 0 0 0 0 c-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             t4 := u64u32(c & M);
             c >>= 26;
             c += v4 * R1;
-            assert(t4 == 26);
-            assert(c == 39);
+            assert(t4 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u4 0 0 0 0 t9 0 0 0 c-u4*R1 t4-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
 
@@ -1107,7 +1107,7 @@ module {
                     u64(a.n[5]) * u64(b.n[0])
                 );
 
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1122,20 +1122,20 @@ module {
                     ), 
                     u64(a.n[9]) * u64(b.n[6])
                 );
-            assert(d == 62);
+            assert(d >> 62 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             v5 := d & M;
             d >>= 26;
             c += v5 * R0;
-            assert(v5 == 26);
-            assert(d == 36);
+            assert(v5 >> 26 == 0);
+            assert(d >> 36 == 0);
             // assert(c, 64);
             /* [d u5 0 0 0 0 0 t9 0 0 0 c-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             t5 := u64u32(c & M);
             c >>= 26;
             c += v5 * R1;
-            assert(t5 == 26);
-            assert(c == 39);
+            assert(t5 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u5 0 0 0 0 0 t9 0 0 c-u5*R1 t5-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
 
@@ -1161,7 +1161,7 @@ module {
                     ),
                     u64(a.n[6]) * u64(b.n[0])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1173,20 +1173,20 @@ module {
                     ), 
                     u64(a.n[9]) * u64(b.n[7])
                 );
-            assert(d == 61);
+            assert(d >> 61 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             v6 := d & M;
             d >>= 26;
             c += v6 * R0;
-            assert(v6 == 26);
-            assert(d == 35);
+            assert(v6 >> 26 == 0);
+            assert(d >> 35 == 0);
             // assert(c, 64);
             /* [d u6 0 0 0 0 0 0 t9 0 0 c-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             t6 := u64u32(c & M);
             c >>= 26;
             c += v6 * R1;
-            assert(t6 == 26);
-            assert(c == 39);
+            assert(t6 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u6 0 0 0 0 0 0 t9 0 c-u6*R1 t6-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
 
@@ -1226,21 +1226,21 @@ module {
                     ), 
                     u64(a.n[9]) * u64(b.n[8])
                 );
-            assert(d == 58);
+            assert(d >> 58 == 0);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             v7 := d & M;
             d >>= 26;
             c += v7 * R0;
-            assert(v7 == 26);
-            assert(d == 32);
+            assert(v7 >> 26 == 0);
+            assert(d >> 32 == 0);
             // assert(c, 64);
             assert(c <= 0x800001703fffc2f7);
             /* [d u7 0 0 0 0 0 0 0 t9 0 c-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             t7 := u64u32(c & M);
             c >>= 26;
             c += v7 * R1;
-            assert(t7 == 26);
-            assert(c == 38);
+            assert(t7 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u7 0 0 0 0 0 0 0 t9 c-u7*R1 t7-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
 
@@ -1280,76 +1280,76 @@ module {
                     d, 
                     u64(a.n[9]) * u64(b.n[9])
                 );
-            assert(d == 57);
+            assert(d >> 57 == 0);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             v8 := d & M;
             d >>= 26;
             c += v8 * R0;
-            assert(v8 == 26);
-            assert(d == 31);
+            assert(v8 >> 26 == 0);
+            assert(d >> 31 == 0);
             // assert(c, 64);
             assert(c <= 0x9000016fbfffc2f8);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             n[3] := t3;
-            assert(n[3] == 26);
+            assert(n[3] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 t4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[4] := t4;
-            assert(n[4] == 26);
+            assert(n[4] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[5] := t5;
-            assert(n[5] == 26);
+            assert(n[5] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[6] := t6;
-            assert(n[6] == 26);
+            assert(n[6] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[7] := t7;
-            assert(n[7] == 26);
+            assert(n[7] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             n[8] := u64u32(c & M);
             c >>= 26;
             c += v8 * R1;
-            assert(n[8] == 26);
-            assert(c == 39);
+            assert(n[8] >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9+c-u8*R1 r8-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 0 t9+c r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             c += d * R0 + u64(t9);
-            assert(c == 45);
+            assert(c >> 45 == 0);
             /* [d 0 0 0 0 0 0 0 0 0 c-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[9] := u64u32(c & (M >> 4));
             c >>= 22;
             c += d * (R1 << 4);
-            assert(n[9] == 22);
-            assert(c == 46);
+            assert(n[9] >> 22 == 0);
+            assert(c >> 46 == 0);
             /* [d 0 0 0 0 0 0 0 0 r9+((c-d*R1<<4)<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 -d*R1 r9+(c<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             d := c * (R0 >> 4) + u64(t0);
-            assert(d == 56);
+            assert(d >> 56 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 d-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[0] := u64u32(d & M);
             d >>= 26;
-            assert(n[0] == 26);
-            assert(d == 30);
+            assert(n[0] >> 26 == 0);
+            assert(d >> 30 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1+d r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d += c * (R1 >> 4) + u64(t1);
-            assert(d == 53);
+            assert(d >> 53 == 0);
             assert(d <= 0x10000003ffffbf);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 d-c*R1>>4 r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9 r8 r7 r6 r5 r4 r3 t2 d r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[1] := u64u32(d & M);
             d >>= 26;
-            assert(n[1] == 26);
-            assert(d == 27);
+            assert(n[1] >> 26 == 0);
+            assert(d >> 27 == 0);
             assert(d <= 0x4000000);
             /* [r9 r8 r7 r6 r5 r4 r3 t2+d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d += u64(t2);
-            assert(d == 27);
+            assert(d >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[2] := u64u32(d);
-            assert(n[2] == 27);
+            assert(n[2] >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 r2 r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */            
         };
 
@@ -1382,16 +1382,16 @@ module {
             var t6: Nat32 = 0;
             var t7: Nat32 = 0;
 
-            assert(a.n[0] == 30);
-            assert(a.n[1] == 30);
-            assert(a.n[2] == 30);
-            assert(a.n[3] == 30);
-            assert(a.n[4] == 30);
-            assert(a.n[5] == 30);
-            assert(a.n[6] == 30);
-            assert(a.n[7] == 30);
-            assert(a.n[8] == 30);
-            assert(a.n[9] == 26);
+            assert(a.n[0] >> 30 == 0);
+            assert(a.n[1] >> 30 == 0);
+            assert(a.n[2] >> 30 == 0);
+            assert(a.n[3] >> 30 == 0);
+            assert(a.n[4] >> 30 == 0);
+            assert(a.n[5] >> 30 == 0);
+            assert(a.n[6] >> 30 == 0);
+            assert(a.n[7] >> 30 == 0);
+            assert(a.n[8] >> 30 == 0);
+            assert(a.n[9] >> 26 == 0);
 
             // [... a b c] is a shorthand for ... + a<<52 + b<<26 + c<<0 mod n.
             // px is a shorthand for sum(a.n[i]*a.n[x-i], i=0..x).
@@ -1411,16 +1411,16 @@ module {
                     ), 
                     u64(a.n[4] * 2) * u64(a.n[5])
                 );
-            // assert(d == 64);
+            // assert(d >> 64 == 0);
             /* [d 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
             t9 := u64u32(d & M);
             d >>= 26;
-            assert(t9 == 26);
-            assert(d == 38);
+            assert(t9 >> 26 == 0);
+            assert(d >> 38 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
 
             c := u64(a.n[0]) * u64(a.n[0]);
-            assert(c == 60);
+            assert(c >> 60 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p9 0 0 0 0 0 0 0 0 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1439,20 +1439,20 @@ module {
                     u64(a.n[5]) * u64(a.n[5])
                 );
 
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             v0 := d & M;
             d >>= 26;
             c += v0 * R0;
-            assert(v0 == 26);
-            assert(d == 37);
-            assert(c == 61);
+            assert(v0 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 61 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 0 c-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             t0 := u64u32(c & M);
             c >>= 26;
             c += v0 * R1;
-            assert(t0 == 26);
-            assert(c == 37);
+            assert(t0 >> 26 == 0);
+            assert(c >> 37 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 c-u0*R1 t0-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
 
@@ -1460,7 +1460,7 @@ module {
                     c,
                     u64(a.n[0] * 2) * u64(a.n[1])
                 );
-            assert(c == 62);
+            assert(c >> 62 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 p1 p0] */
 
             d := wrapping_add(
@@ -1477,20 +1477,20 @@ module {
                     u64(a.n[5] * 2) * u64(a.n[6])
                 );
             
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             v1 := d & M;
             d >>= 26;
             c += v1 * R0;
-            assert(v1 == 26);
-            assert(d == 37);
-            assert(c == 63);
+            assert(v1 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 63 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 0 c-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             t1 := u64u32(c & M);
             c >>= 26;
             c += v1 * R1;
-            assert(t1 == 26);
-            assert(c == 38);
+            assert(t1 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 c-u1*R1 t1-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
 
@@ -1502,7 +1502,7 @@ module {
                     u64(a.n[1]) * u64(a.n[1])
                 );
 
-            assert(c == 62);
+            assert(c >> 62 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1517,20 +1517,20 @@ module {
                     ),
                     u64(a.n[6]) * u64(a.n[6])
                 );
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             v2 := d & M;
             d >>= 26;
             c += v2 * R0;
-            assert(v2 == 26);
-            assert(d == 37);
-            assert(c == 63);
+            assert(v2 >> 26 == 0);
+            assert(d >> 37 == 0);
+            assert(c >> 63 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 0 c-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             t2 := u64u32(c & M);
             c >>= 26;
             c += v2 * R1;
-            assert(t2 == 26);
-            assert(c == 38);
+            assert(t2 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 c-u2*R1 t2-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
 
@@ -1541,7 +1541,7 @@ module {
                     ),
                     u64(a.n[1] * 2) * u64(a.n[2])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1553,20 +1553,20 @@ module {
                     ),
                     u64(a.n[6] * 2) * u64(a.n[7])
                 );
-            assert(d == 63);
+            assert(d >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             v3 := d & M;
             d >>= 26;
             c += v3 * R0;
-            assert(v3 == 26);
-            assert(d == 37);
+            assert(v3 >> 26 == 0);
+            assert(d >> 37 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u3 0 0 0 t9 0 0 0 0 0 c-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             t3 := u64u32(c & M);
             c >>= 26;
             c += v3 * R1;
-            assert(t3 == 26);
-            assert(c == 39);
+            assert(t3 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u3 0 0 0 t9 0 0 0 0 c-u3*R1 t3-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
 
@@ -1580,7 +1580,7 @@ module {
                     ),
                     u64(a.n[2]) * u64(a.n[2])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1592,20 +1592,20 @@ module {
                     ),
                     u64(a.n[7]) * u64(a.n[7])
                 );          
-            assert(d == 62);
+            assert(d >> 62 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             v4 := d & M;
             d >>= 26;
             c += v4 * R0;
-            assert(v4 == 26);
-            assert(d == 36);
+            assert(v4 >> 26 == 0);
+            assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u4 0 0 0 0 t9 0 0 0 0 c-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             t4 := u64u32(c & M);
             c >>= 26;
             c += v4 * R1;
-            assert(t4 == 26);
-            assert(c == 39);
+            assert(t4 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u4 0 0 0 0 t9 0 0 0 c-u4*R1 t4-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
 
@@ -1619,7 +1619,7 @@ module {
                     ),
                     u64(a.n[2] * 2) * u64(a.n[3])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1628,20 +1628,20 @@ module {
                     ),
                     u64(a.n[7] * 2) * u64(a.n[8])
                 );  
-            assert(d == 62);
+            assert(d >> 62 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             v5 := d & M;
             d >>= 26;
             c += v5 * R0;
-            assert(v5 == 26);
-            assert(d == 36);
+            assert(v5 >> 26 == 0);
+            assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u5 0 0 0 0 0 t9 0 0 0 c-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             t5 := u64u32(c & M);
             c >>= 26;
             c += v5 * R1;
-            assert(t5 == 26);
-            assert(c == 39);
+            assert(t5 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u5 0 0 0 0 0 t9 0 0 c-u5*R1 t5-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
 
@@ -1658,7 +1658,7 @@ module {
                     ),
                     u64(a.n[3]) * u64(a.n[3])
                 );
-            assert(c == 63);
+            assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
@@ -1667,20 +1667,20 @@ module {
                     ),
                     u64(a.n[8]) * u64(a.n[8])
                 );
-            assert(d == 61);
+            assert(d >> 61 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             v6 := d & M;
             d >>= 26;
             c += v6 * R0;
-            assert(v6 == 26);
-            assert(d == 35);
+            assert(v6 >> 26 == 0);
+            assert(d >> 35 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u6 0 0 0 0 0 0 t9 0 0 c-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             t6 := u64u32(c & M);
             c >>= 26;
             c += v6 * R1;
-            assert(t6 == 26);
-            assert(c == 39);
+            assert(t6 >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u6 0 0 0 0 0 0 t9 0 c-u6*R1 t6-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
 
@@ -1702,21 +1702,21 @@ module {
             assert(c <= 0x8000007C00000007);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(d, u64(a.n[8] * 2) * u64(a.n[9]));
-            assert(d == 58);
+            assert(d >> 58 == 0);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             v7 := d & M;
             d >>= 26;
             c += v7 * R0;
-            assert(v7 == 26);
-            assert(d == 32);
+            assert(v7 >> 26 == 0);
+            assert(d >> 32 == 0);
             /* debug_assert_bits!(c, 64); */
             assert(c <= 0x800001703FFFC2F7);
             /* [d u7 0 0 0 0 0 0 0 t9 0 c-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             t7 := u64u32(c & M);
             c >>= 26;
             c += v7 * R1;
-            assert(t7 == 26);
-            assert(c == 38);
+            assert(t7 >> 26 == 0);
+            assert(c >> 38 == 0);
             /* [d u7 0 0 0 0 0 0 0 t9 c-u7*R1 t7-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
 
@@ -1740,76 +1740,76 @@ module {
             assert(c <= 0x9000007B80000008);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(d, u64(a.n[9]) * u64(a.n[9]));
-            assert(d == 57);
+            assert(d >> 57 == 0);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             v8 := d & M;
             d >>= 26;
             c += v8 * R0;
-            assert(v8 == 26);
-            assert(d == 31);
+            assert(v8 >> 26 == 0);
+            assert(d >> 31 == 0);
             /* debug_assert_bits!(c, 64); */
             assert(c <= 0x9000016FBFFFC2F8);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             n[3] := t3;
-            assert(n[3] == 26);
+            assert(n[3] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 t4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[4] := t4;
-            assert(n[4] == 26);
+            assert(n[4] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 t5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[5] := t5;
-            assert(n[5] == 26);
+            assert(n[5] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 t6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[6] := t6;
-            assert(n[6] == 26);
+            assert(n[6] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 t7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[7] := t7;
-            assert(n[7] == 26);
+            assert(n[7] >> 26 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9 c-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             n[8] := u64u32(c & M);
             c >>= 26;
             c += v8 * R1;
-            assert(n[8] == 26);
-            assert(c == 39);
+            assert(n[8] >> 26 == 0);
+            assert(c >> 39 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9+c-u8*R1 r8-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 0 t9+c r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             c += d * R0 + u64(t9);
-            assert(c == 45);
+            assert(c >> 45 == 0);
             /* [d 0 0 0 0 0 0 0 0 0 c-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[9] := u64u32(c & (M >> 4));
             c >>= 22;
             c += d * (R1 << 4);
-            assert(n[9] == 22);
-            assert(c == 46);
+            assert(n[9] >> 22 == 0);
+            assert(c >> 46 == 0);
             /* [d 0 0 0 0 0 0 0 0 r9+((c-d*R1<<4)<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 -d*R1 r9+(c<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
             d := c * (R0 >> 4) + u64(t0);
-            assert(d == 56);
+            assert(d >> 56 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 d-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[0] := u64u32(d & M);
             d >>= 26;
-            assert(n[0] == 26);
-            assert(d == 30);
+            assert(n[0] >> 26 == 0);
+            assert(d >> 30 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1+d r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d += c * (R1 >> 4) + u64(t1);
-            assert(d == 53);
+            assert(d >> 53 == 0);
             assert(d <= 0x10000003FFFFBF);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 d-c*R1>>4 r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9 r8 r7 r6 r5 r4 r3 t2 d r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[1] := u64u32(d & M);
             d >>= 26;
-            assert(n[1] == 26);
-            assert(d == 27);
+            assert(n[1] >> 26 == 0);
+            assert(d >> 27 == 0);
             assert(d <= 0x4000000);
             /* [r9 r8 r7 r6 r5 r4 r3 t2+d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d += u64(t2);
-            assert(d == 27);
+            assert(d >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[2] := u64u32(d);
-            assert(n[2] == 27);
+            assert(n[2] >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 r2 r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */            
         };
 
