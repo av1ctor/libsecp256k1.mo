@@ -58,9 +58,9 @@ module {
     public func array_ref<T>(arr: [T], offset: Nat, size: Nat): [T] {
         let res = Buffer.Buffer<T>(size);
 
-        var i = offset;
-        while(i < offset + size) {
-            res.add(arr[i]);
+        var i = 0;
+        while(i < size) {
+            res.add(arr[offset + i]);
             i += 1;
         };
 
@@ -70,9 +70,9 @@ module {
     public func array_mut_ref<T>(arr: [var T], offset: Nat, size: Nat): [var T] {
         let res = Buffer.Buffer<T>(size);
 
-        var i = offset;
-        while(i < offset + size) {
-            res.add(arr[i]);
+        var i = 0;
+        while(i < size) {
+            res.add(arr[offset + i]);
             i += 1;
         };
 
