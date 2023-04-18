@@ -346,7 +346,7 @@ module {
             let nonzero = 0xFFFFFFFF * boolu64(not is_zero());
             var t = 1 * u8u64(flag.unwrap_u8());
 
-            for (i in Iter.range(0, 7)) {
+            for (i in Iter.range(0, 7)) { //0..8
                 t += u64(n[i] ^ mask) + u64(SECP256K1_N[i] & mask);
                 n[i] := u64u32(t & nonzero);
                 t >>= 32;
@@ -2380,129 +2380,129 @@ module {
             x8 := x8.mul(x2);
 
             var x14 = x8.sqr();
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 x14 := x14.sqr();
             };
             x14 := x14.mul(x6);
 
             var x28 = x14.sqr();
-            for (_ in Iter.range(0, 12)) {
+            for (_ in Iter.range(0, 12)) {//0..13
                 x28 := x28.sqr();
             };
             x28 := x28.mul(x14);
 
             var x56 = x28.sqr();
-            for (_ in Iter.range(0, 26)) {
+            for (_ in Iter.range(0, 26)) {//0..27
                 x56 := x56.sqr();
             };
             x56 := x56.mul(x28);
 
             var x112 = x56.sqr();
-            for (_ in Iter.range(0,54)) {
+            for (_ in Iter.range(0,54)) {//0..55
                 x112 := x112.sqr();
             };
             x112 := x112.mul(x56);
 
             var x126 = x112.sqr();
-            for (_ in Iter.range(0, 12)) {
+            for (_ in Iter.range(0, 12)) {//0..13
                 x126 := x126.sqr();
             };
             x126 := x126.mul(x14);
 
             var t = x126;
-            for (_ in Iter.range(0, 2)) {
+            for (_ in Iter.range(0, 2)) {//0..3
                 t := t.sqr();
             };
             t := t.mul(u5);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(u5);
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 t := t.sqr();
             };
             t := t.mul(u11);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(u11);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 5)) {
+            for (_ in Iter.range(0, 5)) {//0..6
                 t := t.sqr();
             };
             t := t.mul(u13);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(u5);
-            for (_ in Iter.range(0, 2)) {
+            for (_ in Iter.range(0, 2)) {//0..3
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 t := t.sqr();
             };
             t := t.mul(u9);
-            for (_ in Iter.range(0, 5)) {
+            for (_ in Iter.range(0, 5)) {//0..6
                 t := t.sqr();
             };
             t := t.mul(u5);
-            for (_ in Iter.range(0, 9)) {
+            for (_ in Iter.range(0, 9)) {//0..10
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(x3);
-            for (_ in Iter.range(0, 8)) {
+            for (_ in Iter.range(0, 8)) {//0..9
                 t := t.sqr();
             };
             t := t.mul(x8);
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 t := t.sqr();
             };
             t := t.mul(u9);
-            for (_ in Iter.range(0, 5)) {
+            for (_ in Iter.range(0, 5)) {//0..6
                 t := t.sqr();
             };
             t := t.mul(u11);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(u13);
-            for (_ in Iter.range(0, 4)) {
+            for (_ in Iter.range(0, 4)) {//0..5
                 t := t.sqr();
             };
             t := t.mul(x2);
-            for (_ in Iter.range(0, 5)) {
+            for (_ in Iter.range(0, 5)) {//0..6
                 t := t.sqr();
             };
             t := t.mul(u13);
-            for (_ in Iter.range(0, 9)) {
+            for (_ in Iter.range(0, 9)) {//0..10
                 t := t.sqr();
             };
             t := t.mul(u13);
-            for (_ in Iter.range(0, 3)) {
+            for (_ in Iter.range(0, 3)) {//0..4
                 t := t.sqr();
             };
             t := t.mul(u9);
-            for (_ in Iter.range(0, 5)) {
+            for (_ in Iter.range(0, 5)) {//0..6
                 t := t.sqr();
             };
             t := t.mul(x);
-            for (_ in Iter.range(0, 7)) {
+            for (_ in Iter.range(0, 7)) {//0..8
                 t := t.sqr();
             };
             assign_mut(t.mul(x6));
@@ -2516,7 +2516,7 @@ module {
         public func add_assign(other: Scalar) {
             var t: Nat64 = 0;
 
-            for (i in Iter.range(0, 7)) {
+            for (i in Iter.range(0, 7)) {//0..8
                 t += u64(n[i]) + u64(other.n[i]);
                 n[i] := u64u32(t & 0xFFFFFFFF);
                 t >>= 32;

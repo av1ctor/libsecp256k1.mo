@@ -4,6 +4,7 @@ import Iter "mo:base/Iter";
 import Nat64 "mo:base/Nat64";
 
 import Utils "./utils";
+import Int "mo:base/Int";
 
 module {
 
@@ -718,7 +719,8 @@ module {
             assert(verify());
             assert(other.verify());           
 
-            for (i in Iter.range(0, 9)) {
+            for (ii in Iter.revRange(9, 0)) { //0..10.rev()
+                let i = Int.abs(ii);
                 if (n[i] > other.n[i]) {
                     return #greater;
                 };
@@ -1862,65 +1864,65 @@ module {
             x3 := x3.mul(_self);
 
             var x6 = x3;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x6 := x6.sqr();
             };
             x6 := x6.mul(x3);
 
             var x9 = x6;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x9 := x9.sqr();
             };
             x9 := x9.mul(x3);
 
             var x11 = x9;
-            for (_ in (Iter.range(0, 2))) {
+            for (_ in (Iter.range(0, 1))) { //0..2
                 x11 := x11.sqr();
             };
             x11 := x11.mul(x2);
 
             var x22 = x11;
-            for (_ in (Iter.range(0, 11))) {
+            for (_ in (Iter.range(0, 10))) { //0..11
                 x22 := x22.sqr();
             };
             x22 := x22.mul(x11);
 
             var x44 = x22;
-            for (_ in (Iter.range(0, 22))) {
+            for (_ in (Iter.range(0, 21))) { //0..22
                 x44 := x44.sqr();
             };
             x44 := x44.mul(x22);
 
             var x88 = x44;
-            for (_ in (Iter.range(0, 44))) {
+            for (_ in (Iter.range(0, 43))) { //0..44
                 x88 := x88.sqr();
             };
             x88 := x88.mul(x44);
 
             var x176 = x88;
-            for (_ in (Iter.range(0, 88))) {
+            for (_ in (Iter.range(0, 87))) { //0..88
                 x176 := x176.sqr();
             };
             x176 := x176.mul(x88);
 
             var x220 = x176;
-            for (_ in (Iter.range(0, 44))) {
+            for (_ in (Iter.range(0, 43))) { //0..44
                 x220 := x220.sqr();
             };
             x220 := x220.mul(x44);
 
             var x223 = x220;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x223 := x223.sqr();
             };
             x223 := x223.mul(x3);
 
             var t1 = x223;
-            for (_ in (Iter.range(0, 23))) {
+            for (_ in (Iter.range(0, 22))) { //0..23
                 t1 := t1.sqr();
             };
             t1 := t1.mul(x22);
-            for (_ in (Iter.range(0, 6))) {
+            for (_ in (Iter.range(0, 5))) { //0..6
                 t1 := t1.sqr();
             };
             t1 := t1.mul(x2);
@@ -1943,73 +1945,73 @@ module {
             x3 := x3.mul(_self);
 
             var x6 = x3;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x6 := x6.sqr();
             };
             x6 := x6.mul(x3);
 
             var x9 = x6;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x9 := x9.sqr();
             };
             x9 := x9.mul(x3);
 
             var x11 = x9;
-            for (_ in (Iter.range(0, 2))) {
+            for (_ in (Iter.range(0, 1))) { //0..2
                 x11 := x11.sqr();
             };
             x11 := x11.mul(x2);
 
             var x22 = x11;
-            for (_ in (Iter.range(0, 11))) {
+            for (_ in (Iter.range(0, 10))) { //0..11
                 x22 := x22.sqr();
             };
             x22 := x22.mul(x11);
 
             var x44 = x22;
-            for (_ in (Iter.range(0, 22))) {
+            for (_ in (Iter.range(0, 21))) { //0..22
                 x44 := x44.sqr();
             };
             x44 := x44.mul(x22);
 
             var x88 = x44;
-            for (_ in (Iter.range(0, 44))) {
+            for (_ in (Iter.range(0, 43))) { //0..44
                 x88 := x88.sqr();
             };
             x88 := x88.mul(x44);
 
             var x176 = x88;
-            for (_ in (Iter.range(0, 88))) {
+            for (_ in (Iter.range(0, 87))) { //0..88
                 x176 := x176.sqr();
             };
             x176 := x176.mul(x88);
 
             var x220 = x176;
-            for (_ in (Iter.range(0, 44))) {
+            for (_ in (Iter.range(0, 43))) { //0..44
                 x220 := x220.sqr();
             };
             x220 := x220.mul(x44);
 
             var x223 = x220;
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 x223 := x223.sqr();
             };
             x223 := x223.mul(x3);
 
             var t1 = x223;
-            for (_ in (Iter.range(0, 23))) {
+            for (_ in (Iter.range(0, 22))) { //0..23
                 t1 := t1.sqr();
             };
             t1 := t1.mul(x22);
-            for (_ in (Iter.range(0, 5))) {
+            for (_ in (Iter.range(0, 4))) { //0..5
                 t1 := t1.sqr();
             };
             t1 := t1.mul(_self);
-            for (_ in (Iter.range(0, 3))) {
+            for (_ in (Iter.range(0, 2))) { //0..3
                 t1 := t1.sqr();
             };
             t1 := t1.mul(x2);
-            for (_ in (Iter.range(0, 2))) {
+            for (_ in (Iter.range(0, 1))) { //0..2
                 t1 := t1.sqr();
             };
             _self.mul(t1)
