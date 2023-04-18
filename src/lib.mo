@@ -14,12 +14,12 @@ module PublicKey {
         public func serialize(
         ): [Nat8] {
             let ret = Array.init<Nat8>(65, 0);
-            var elem = affine;
+            let elem = affine.clone();
 
             elem.x.normalize_var();
             elem.y.normalize_var();
-            elem.x.fill_b32(Utils.array_mut_ref(ret, 1, 32));
-            elem.y.fill_b32(Utils.array_mut_ref(ret, 33, 32));
+            elem.x.fill_b32(ret, 1);
+            elem.y.fill_b32(ret, 33);
             ret[0] := Utils.TAG_PUBKEY_FULL;
 
             return Array.freeze(ret);
@@ -28,11 +28,11 @@ module PublicKey {
         public func serialize_compressed(
         ): [Nat8] {
             let ret = Array.init<Nat8>(33, 0);
-            var elem = affine;
+            let elem = affine.clone();
 
             elem.x.normalize_var();
             elem.y.normalize_var();
-            elem.x.fill_b32(Utils.array_mut_ref(ret, 1, 32));
+            elem.x.fill_b32(ret, 1);
             ret[0] := if(elem.y.is_odd()) {
                 Utils.TAG_PUBKEY_ODD
             } else {
@@ -51,15 +51,15 @@ module PublicKey {
             or p[0] == Utils.TAG_PUBKEY_HYBRID_ODD)) {
             return #err(#InvalidPublicKey);
         };
-        var x = Field.Field();
-        var y = Field.Field();
-        if(not x.set_b32(Utils.array_ref(p, 1, 32))) {
+        let x = Field.Field();
+        let y = Field.Field();
+        if(not x.set_b32(p, 1)) {
             return #err(#InvalidPublicKey);
         };
-        if(not y.set_b32(Utils.array_ref(p, 33, 32))) {
+        if(not y.set_b32(p, 33)) {
             return #err(#InvalidPublicKey);
         };
-        var elem = Group.Affine();
+        let elem = Group.Affine();
         elem.set_xy(x, y);
         if((p[0] == Utils.TAG_PUBKEY_HYBRID_EVEN or p[0] == Utils.TAG_PUBKEY_HYBRID_ODD)
             and (y.is_odd() != (p[0] == Utils.TAG_PUBKEY_HYBRID_ODD))) {
@@ -81,11 +81,11 @@ module PublicKey {
         if(not (p[0] == Utils.TAG_PUBKEY_EVEN or p[0] == Utils.TAG_PUBKEY_ODD)) {
             return #err(#InvalidPublicKey);
         };
-        var x = Field.Field();
-        if(not x.set_b32(Utils.array_ref(p, 1, 32))) {
+        let x = Field.Field();
+        if(not x.set_b32(p, 1)) {
             return #err(#InvalidPublicKey);
         };
-        var elem = Group.Affine();
+        let elem = Group.Affine();
         ignore elem.set_xo_var(x, p[0] == Utils.TAG_PUBKEY_ODD);
         if(elem.is_infinity()) {
             return #err(#InvalidPublicKey);

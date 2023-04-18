@@ -2,9 +2,8 @@ import Array "mo:base/Array";
 import Order "mo:base/Order";
 import Iter "mo:base/Iter";
 import Nat64 "mo:base/Nat64";
-
-import Utils "./utils";
 import Int "mo:base/Int";
+import Utils "./utils";
 
 module {
 
@@ -25,7 +24,7 @@ module {
         public var magnitude: Nat32 = 0;
         public var normalized: Bool = true;
 
-        public func self(): Field {
+        public func clone(): Field {
             let ret = Field();
             ret.n[0] := n[0];
             ret.n[1] := n[1];
@@ -64,18 +63,18 @@ module {
         };
 
         public func verify(): Bool {
-            let m = (if normalized { 1 } else { 2 }) * magnitude;
+            let m = (if normalized { 1 } else { 2 }) *% magnitude;
             var r = true;
-            r := r and (n[0] <= 0x3ffffff * m);
-            r := r and (n[1] <= 0x3ffffff * m);
-            r := r and (n[2] <= 0x3ffffff * m);
-            r := r and (n[3] <= 0x3ffffff * m);
-            r := r and (n[4] <= 0x3ffffff * m);
-            r := r and (n[5] <= 0x3ffffff * m);
-            r := r and (n[6] <= 0x3ffffff * m);
-            r := r and (n[7] <= 0x3ffffff * m);
-            r := r and (n[8] <= 0x3ffffff * m);
-            r := r and (n[9] <= 0x03fffff * m);
+            r := r and (n[0] <= 0x3ffffff *% m);
+            r := r and (n[1] <= 0x3ffffff *% m);
+            r := r and (n[2] <= 0x3ffffff *% m);
+            r := r and (n[3] <= 0x3ffffff *% m);
+            r := r and (n[4] <= 0x3ffffff *% m);
+            r := r and (n[5] <= 0x3ffffff *% m);
+            r := r and (n[6] <= 0x3ffffff *% m);
+            r := r and (n[7] <= 0x3ffffff *% m);
+            r := r and (n[8] <= 0x3ffffff *% m);
+            r := r and (n[9] <= 0x03fffff *% m);
             r := r and (magnitude <= 32);
             if normalized {
                 r := r and magnitude <= 1;
@@ -88,7 +87,7 @@ module {
                         & n[3]
                         & n[2];
                     if (mid == 0x3ffffff) {
-                        r := r and ((n[1] + 0x40 + ((n[0] + 0x3d1) >> 26)) <= 0x3ffffff)
+                        r := r and ((n[1] +% 0x40 +% ((n[0] +% 0x3d1) >> 26)) <= 0x3ffffff)
                     };
                 };
             };
@@ -112,31 +111,31 @@ module {
             var x = t9 >> 22;
             t9 &= 0x03fffff;
 
-            t0 += x * 0x3d1;
-            t1 += x << 6;
-            t1 += t0 >> 26;
+            t0 +%= x *% 0x3d1;
+            t1 +%= x << 6;
+            t1 +%= t0 >> 26;
             t0 &= 0x3ffffff;
-            t2 += t1 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
             m := t2;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
             m &= t3;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
             m &= t4;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
             m &= t5;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
             m &= t6;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
             m &= t7;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
             m &= t8;
 
@@ -145,31 +144,31 @@ module {
             x := (t9 >> 22)
                 | ((if (t9 == 0x03fffff) { 1 } else { 0 })
                     & (if (m == 0x3ffffff) { 1 } else { 0 })
-                    & (if ((t1 + 0x40 + ((t0 + 0x3d1) >> 26)) > 0x3ffffff) {
+                    & (if ((t1 +% 0x40 +% ((t0 +% 0x3d1) >> 26)) > 0x3ffffff) {
                         1
                     } else {
                         0
                     }));
 
-            t0 += x * 0x3d1;
-            t1 += x << 6;
-            t1 += t0 >> 26;
+            t0 +%= x *% 0x3d1;
+            t1 +%= x << 6;
+            t1 +%= t0 >> 26;
             t0 &= 0x3ffffff;
-            t2 += t1 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
 
             assert(t9 >> 22 == x);
@@ -207,25 +206,25 @@ module {
             let x = t9 >> 22;
             t9 &= 0x03fffff;
 
-            t0 += x * 0x3d1;
-            t1 += x << 6;
-            t1 += t0 >> 26;
+            t0 +%= x *% 0x3d1;
+            t1 +%= x << 6;
+            t1 +%= t0 >> 26;
             t0 &= 0x3ffffff;
-            t2 += t1 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
 
             assert(t9 >> 23 == 0);
@@ -261,31 +260,31 @@ module {
             var x = t9 >> 22;
             t9 &= 0x03fffff;
 
-            t0 += x * 0x3d1;
-            t1 += x << 6;
-            t1 += t0 >> 26;
+            t0 +%= x *% 0x3d1;
+            t1 +%= x << 6;
+            t1 +%= t0 >> 26;
             t0 &= 0x3ffffff;
-            t2 += t1 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
             m := t2;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
             m &= t3;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
             m &= t4;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
             m &= t5;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
             m &= t6;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
             m &= t7;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
             m &= t8;
 
@@ -294,32 +293,32 @@ module {
             x := (t9 >> 22)
                 | ((if (t9 == 0x03fffff) { 1 } else { 0 })
                     & (if (m == 0x3ffffff) { 1 } else { 0 })
-                    & (if ((t1 + 0x40 + ((t0 + 0x3d1) >> 26)) > 0x3ffffff) {
+                    & (if ((t1 +% 0x40 +% ((t0 +% 0x3d1) >> 26)) > 0x3ffffff) {
                         1
                     } else {
                         0
                     }));
 
             if (x > 0) {
-                t0 += 0x3d1;
-                t1 += x << 6;
-                t1 += t0 >> 26;
+                t0 +%= 0x3d1;
+                t1 +%= x << 6;
+                t1 +%= t0 >> 26;
                 t0 &= 0x3ffffff;
-                t2 += t1 >> 26;
+                t2 +%= t1 >> 26;
                 t1 &= 0x3ffffff;
-                t3 += t2 >> 26;
+                t3 +%= t2 >> 26;
                 t2 &= 0x3ffffff;
-                t4 += t3 >> 26;
+                t4 +%= t3 >> 26;
                 t3 &= 0x3ffffff;
-                t5 += t4 >> 26;
+                t5 +%= t4 >> 26;
                 t4 &= 0x3ffffff;
-                t6 += t5 >> 26;
+                t6 +%= t5 >> 26;
                 t5 &= 0x3ffffff;
-                t7 += t6 >> 26;
+                t7 +%= t6 >> 26;
                 t6 &= 0x3ffffff;
-                t8 += t7 >> 26;
+                t8 +%= t7 >> 26;
                 t7 &= 0x3ffffff;
-                t9 += t8 >> 26;
+                t9 +%= t8 >> 26;
                 t8 &= 0x3ffffff;
 
                 assert(t9 >> 22 == x);
@@ -364,41 +363,41 @@ module {
             let x = t9 >> 22;
             t9 &= 0x03fffff;
 
-            t0 += x * 0x3d1;
-            t1 += x << 6;
-            t1 += t0 >> 26;
+            t0 +%= x *% 0x3d1;
+            t1 +%= x << 6;
+            t1 +%= t0 >> 26;
             t0 &= 0x3ffffff;
             z0 := t0;
             z1 := t0 ^ 0x3d0;
-            t2 += t1 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
             z0 |= t1;
             z1 &= t1 ^ 0x40;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
             z0 |= t2;
             z1 &= t2;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
             z0 |= t3;
             z1 &= t3;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
             z0 |= t4;
             z1 &= t4;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
             z0 |= t5;
             z1 &= t5;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
             z0 |= t6;
             z1 &= t6;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
             z0 |= t7;
             z1 &= t7;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
             z0 |= t8;
             z1 &= t8;
@@ -433,7 +432,7 @@ module {
             t9 := n[9];
 
             x := t9 >> 22;
-            t0 += x * 0x3d1;
+            t0 +%= x *% 0x3d1;
 
             z0 := t0 & 0x3ffffff;
             z1 := z0 ^ 0x3d0;
@@ -452,38 +451,38 @@ module {
             t8 := n[8];
 
             t9 &= 0x03fffff;
-            t1 += x << 6;
+            t1 +%= x << 6;
 
-            t1 += t0 >> 26;
-            t2 += t1 >> 26;
+            t1 +%= t0 >> 26;
+            t2 +%= t1 >> 26;
             t1 &= 0x3ffffff;
             z0 |= t1;
             z1 &= t1 ^ 0x40;
-            t3 += t2 >> 26;
+            t3 +%= t2 >> 26;
             t2 &= 0x3ffffff;
             z0 |= t2;
             z1 &= t2;
-            t4 += t3 >> 26;
+            t4 +%= t3 >> 26;
             t3 &= 0x3ffffff;
             z0 |= t3;
             z1 &= t3;
-            t5 += t4 >> 26;
+            t5 +%= t4 >> 26;
             t4 &= 0x3ffffff;
             z0 |= t4;
             z1 &= t4;
-            t6 += t5 >> 26;
+            t6 +%= t5 >> 26;
             t5 &= 0x3ffffff;
             z0 |= t5;
             z1 &= t5;
-            t7 += t6 >> 26;
+            t7 +%= t6 >> 26;
             t6 &= 0x3ffffff;
             z0 |= t6;
             z1 &= t6;
-            t8 += t7 >> 26;
+            t8 +%= t7 >> 26;
             t7 &= 0x3ffffff;
             z0 |= t7;
             z1 &= t7;
-            t9 += t8 >> 26;
+            t9 +%= t8 >> 26;
             t8 &= 0x3ffffff;
             z0 |= t8;
             z1 &= t8;
@@ -557,50 +556,49 @@ module {
 
         /// Set a field element equal to 32-byte big endian value. If
         /// successful, the resulting field element is normalized.
-        public func set_b32(a: [Nat8]): Bool {
-            assert(a.size() == 32);
-            n[0] := (u32(a[31]))
-                | ((u32(a[30])) << 8)
-                | ((u32(a[29])) << 16)
-                | ((u32(a[28] & 0x3)) << 24);
-            n[1] := (u32((a[28] >> 2) & 0x3f))
-                | ((u32(a[27])) << 6)
-                | ((u32(a[26])) << 14)
-                | ((u32(a[25] & 0xf)) << 22);
-            n[2] := (u32((a[25] >> 4) & 0xf))
-                | ((u32(a[24])) << 4)
-                | ((u32(a[23])) << 12)
-                | (((u32(a[22])) & 0x3f) << 20);
-            n[3] := (u32((a[22] >> 6) & 0x3))
-                | ((u32(a[21])) << 2)
-                | ((u32(a[20])) << 10)
-                | ((u32(a[19])) << 18);
-            n[4] := (u32(a[18]))
-                | ((u32(a[17])) << 8)
-                | ((u32(a[16])) << 16)
-                | ((u32(a[15] & 0x3)) << 24);
-            n[5] := (u32((a[15] >> 2) & 0x3f))
-                | ((u32(a[14])) << 6)
-                | ((u32(a[13])) << 14)
-                | (((u32(a[12])) & 0xf) << 22);
-            n[6] := (u32((a[12] >> 4) & 0xf))
-                | ((u32(a[11])) << 4)
-                | ((u32(a[10])) << 12)
-                | ((u32(a[9] & 0x3f)) << 20);
-            n[7] := (u32((a[9] >> 6) & 0x3))
-                | ((u32(a[8])) << 2)
-                | ((u32(a[7])) << 10)
-                | ((u32(a[6])) << 18);
-            n[8] := (u32(a[5]))
-                | ((u32(a[4])) << 8)
-                | ((u32(a[3])) << 16)
-                | ((u32(a[2] & 0x3)) << 24);
-            n[9] := (u32((a[2] >> 2) & 0x3f)) | ((u32(a[1])) << 6) | ((u32(a[0])) << 14);
+        public func set_b32(a: [Nat8], offset: Nat): Bool {
+            n[0] := (u32(a[offset + 31]))
+                | ((u32(a[offset + 30])) << 8)
+                | ((u32(a[offset + 29])) << 16)
+                | ((u32(a[offset + 28] & 0x3)) << 24);
+            n[1] := (u32((a[offset + 28] >> 2) & 0x3f))
+                | ((u32(a[offset + 27])) << 6)
+                | ((u32(a[offset + 26])) << 14)
+                | ((u32(a[offset + 25] & 0xf)) << 22);
+            n[2] := (u32((a[offset + 25] >> 4) & 0xf))
+                | ((u32(a[offset + 24])) << 4)
+                | ((u32(a[offset + 23])) << 12)
+                | (((u32(a[offset + 22])) & 0x3f) << 20);
+            n[3] := (u32((a[offset + 22] >> 6) & 0x3))
+                | ((u32(a[offset + 21])) << 2)
+                | ((u32(a[offset + 20])) << 10)
+                | ((u32(a[offset + 19])) << 18);
+            n[4] := (u32(a[offset + 18]))
+                | ((u32(a[offset + 17])) << 8)
+                | ((u32(a[offset + 16])) << 16)
+                | ((u32(a[offset + 15] & 0x3)) << 24);
+            n[5] := (u32((a[offset + 15] >> 2) & 0x3f))
+                | ((u32(a[offset + 14])) << 6)
+                | ((u32(a[offset + 13])) << 14)
+                | (((u32(a[offset + 12])) & 0xf) << 22);
+            n[6] := (u32((a[offset + 12] >> 4) & 0xf))
+                | ((u32(a[offset + 11])) << 4)
+                | ((u32(a[offset + 10])) << 12)
+                | ((u32(a[offset + 9] & 0x3f)) << 20);
+            n[7] := (u32((a[offset + 9] >> 6) & 0x3))
+                | ((u32(a[offset + 8])) << 2)
+                | ((u32(a[offset + 7])) << 10)
+                | ((u32(a[offset + 6])) << 18);
+            n[8] := (u32(a[offset + 5]))
+                | ((u32(a[offset + 4])) << 8)
+                | ((u32(a[offset + 3])) << 16)
+                | ((u32(a[offset + 2] & 0x3)) << 24);
+            n[9] := (u32((a[offset + 2] >> 2) & 0x3f)) | ((u32(a[offset + 1])) << 6) | ((u32(a[offset + 0])) << 14);
 
             if (n[9] == 0x03fffff
                 and (n[8] & n[7] & n[6] & n[5] & n[4] & n[3] & n[2])
                     == 0x3ffffff
-                and (n[1] + 0x40 + ((n[0] + 0x3d1) >> 26)) > 0x3ffffff)
+                and (n[1] +% 0x40 +% ((n[0] +% 0x3d1) >> 26)) > 0x3ffffff)
             {
                 return false;
             };
@@ -612,50 +610,49 @@ module {
             true
         };
 
-        public func fill_b32(r: [var Nat8]) {
-            assert(r.size() == 32);
+        public func fill_b32(r: [var Nat8], offset: Nat) {
             assert(normalized);
             assert(verify());
 
-            r[0] := u8((n[9] >> 14) & 0xff);
-            r[1] := u8((n[9] >> 6) & 0xff);
-            r[2] := u8(((n[9] & 0x3f) << 2) | ((n[8] >> 24) & 0x3));
-            r[3] := u8((n[8] >> 16) & 0xff);
-            r[4] := u8((n[8] >> 8) & 0xff);
-            r[5] := u8(n[8] & 0xff);
-            r[6] := u8((n[7] >> 18) & 0xff);
-            r[7] := u8((n[7] >> 10) & 0xff);
-            r[8] := u8((n[7] >> 2) & 0xff);
-            r[9] := u8(((n[7] & 0x3) << 6) | ((n[6] >> 20) & 0x3f));
-            r[10] := u8((n[6] >> 12) & 0xff);
-            r[11] := u8((n[6] >> 4) & 0xff);
-            r[12] := u8(((n[6] & 0xf) << 4) | ((n[5] >> 22) & 0xf));
-            r[13] := u8((n[5] >> 14) & 0xff);
-            r[14] := u8((n[5] >> 6) & 0xff);
-            r[15] := u8(((n[5] & 0x3f) << 2) | ((n[4] >> 24) & 0x3));
-            r[16] := u8((n[4] >> 16) & 0xff);
-            r[17] := u8((n[4] >> 8) & 0xff);
-            r[18] := u8(n[4] & 0xff);
-            r[19] := u8((n[3] >> 18) & 0xff);
-            r[20] := u8((n[3] >> 10) & 0xff);
-            r[21] := u8((n[3] >> 2) & 0xff);
-            r[22] := u8(((n[3] & 0x3) << 6) | ((n[2] >> 20) & 0x3f));
-            r[23] := u8((n[2] >> 12) & 0xff);
-            r[24] := u8((n[2] >> 4) & 0xff);
-            r[25] := u8(((n[2] & 0xf) << 4) | ((n[1] >> 22) & 0xf));
-            r[26] := u8((n[1] >> 14) & 0xff);
-            r[27] := u8((n[1] >> 6) & 0xff);
-            r[28] := u8(((n[1] & 0x3f) << 2) | ((n[0] >> 24) & 0x3));
-            r[29] := u8((n[0] >> 16) & 0xff);
-            r[30] := u8((n[0] >> 8) & 0xff);
-            r[31] := u8(n[0] & 0xff);
+            r[offset + 0] := u8((n[9] >> 14) & 0xff);
+            r[offset + 1] := u8((n[9] >> 6) & 0xff);
+            r[offset + 2] := u8(((n[9] & 0x3f) << 2) | ((n[8] >> 24) & 0x3));
+            r[offset + 3] := u8((n[8] >> 16) & 0xff);
+            r[offset + 4] := u8((n[8] >> 8) & 0xff);
+            r[offset + 5] := u8(n[8] & 0xff);
+            r[offset + 6] := u8((n[7] >> 18) & 0xff);
+            r[offset + 7] := u8((n[7] >> 10) & 0xff);
+            r[offset + 8] := u8((n[7] >> 2) & 0xff);
+            r[offset + 9] := u8(((n[7] & 0x3) << 6) | ((n[6] >> 20) & 0x3f));
+            r[offset + 10] := u8((n[6] >> 12) & 0xff);
+            r[offset + 11] := u8((n[6] >> 4) & 0xff);
+            r[offset + 12] := u8(((n[6] & 0xf) << 4) | ((n[5] >> 22) & 0xf));
+            r[offset + 13] := u8((n[5] >> 14) & 0xff);
+            r[offset + 14] := u8((n[5] >> 6) & 0xff);
+            r[offset + 15] := u8(((n[5] & 0x3f) << 2) | ((n[4] >> 24) & 0x3));
+            r[offset + 16] := u8((n[4] >> 16) & 0xff);
+            r[offset + 17] := u8((n[4] >> 8) & 0xff);
+            r[offset + 18] := u8(n[4] & 0xff);
+            r[offset + 19] := u8((n[3] >> 18) & 0xff);
+            r[offset + 20] := u8((n[3] >> 10) & 0xff);
+            r[offset + 21] := u8((n[3] >> 2) & 0xff);
+            r[offset + 22] := u8(((n[3] & 0x3) << 6) | ((n[2] >> 20) & 0x3f));
+            r[offset + 23] := u8((n[2] >> 12) & 0xff);
+            r[offset + 24] := u8((n[2] >> 4) & 0xff);
+            r[offset + 25] := u8(((n[2] & 0xf) << 4) | ((n[1] >> 22) & 0xf));
+            r[offset + 26] := u8((n[1] >> 14) & 0xff);
+            r[offset + 27] := u8((n[1] >> 6) & 0xff);
+            r[offset + 28] := u8(((n[1] & 0x3f) << 2) | ((n[0] >> 24) & 0x3));
+            r[offset + 29] := u8((n[0] >> 16) & 0xff);
+            r[offset + 30] := u8((n[0] >> 8) & 0xff);
+            r[offset + 31] := u8(n[0] & 0xff);
         };
 
         /// Convert a field element to a 32-byte big endian
         /// value. Requires the input to be normalized.
         public func b32(): [var Nat8] {
             var r = Array.init<Nat8>(32, 0);
-            fill_b32(r);
+            fill_b32(r, 0);
             r
         };
 
@@ -666,16 +663,16 @@ module {
             assert(other.magnitude <= m);
             assert(other.verify());
 
-            n[0] := 0x3fffc2f * 2 * (m + 1) - other.n[0];
-            n[1] := 0x3ffffbf * 2 * (m + 1) - other.n[1];
-            n[2] := 0x3ffffff * 2 * (m + 1) - other.n[2];
-            n[3] := 0x3ffffff * 2 * (m + 1) - other.n[3];
-            n[4] := 0x3ffffff * 2 * (m + 1) - other.n[4];
-            n[5] := 0x3ffffff * 2 * (m + 1) - other.n[5];
-            n[6] := 0x3ffffff * 2 * (m + 1) - other.n[6];
-            n[7] := 0x3ffffff * 2 * (m + 1) - other.n[7];
-            n[8] := 0x3ffffff * 2 * (m + 1) - other.n[8];
-            n[9] := 0x03fffff * 2 * (m + 1) - other.n[9];
+            n[0] := 0x3fffc2f *% 2 *% (m +% 1) -% other.n[0];
+            n[1] := 0x3ffffbf *% 2 *% (m +% 1) -% other.n[1];
+            n[2] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[2];
+            n[3] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[3];
+            n[4] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[4];
+            n[5] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[5];
+            n[6] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[6];
+            n[7] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[7];
+            n[8] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[8];
+            n[9] := 0x03fffff *% 2 *% (m +% 1) -% other.n[9];
 
             magnitude := m + 1;
             normalized := false;
@@ -686,7 +683,7 @@ module {
         /// expected magnitude of this element as an argument.
         public func neg(m: Nat32): Field {
             let ret = Field();
-            let _self = self();
+            let _self = clone();
             ret.neg_in_place(_self, m);
             ret
         };
@@ -694,18 +691,18 @@ module {
         /// Multiplies the passed field element with a small integer
         /// constant. Multiplies the magnitude by that small integer.
         public func mul_int(a: Nat32) {
-            n[0] *= a;
-            n[1] *= a;
-            n[2] *= a;
-            n[3] *= a;
-            n[4] *= a;
-            n[5] *= a;
-            n[6] *= a;
-            n[7] *= a;
-            n[8] *= a;
-            n[9] *= a;
+            n[0] *%= a;
+            n[1] *%= a;
+            n[2] *%= a;
+            n[3] *%= a;
+            n[4] *%= a;
+            n[5] *%= a;
+            n[6] *%= a;
+            n[7] *%= a;
+            n[8] *%= a;
+            n[9] *%= a;
 
-            magnitude *= a;
+            magnitude *%= a;
             normalized := false;
             assert(verify());
         };
@@ -745,26 +742,6 @@ module {
             var c: Nat64 = 0;
             var d: Nat64 = 0;
             
-            var v0: Nat64 = 0;
-            var v1: Nat64 = 0;
-            var v2: Nat64 = 0;
-            var v3: Nat64 = 0;
-            var v4: Nat64 = 0;
-            var v5: Nat64 = 0;
-            var v6: Nat64 = 0;
-            var v7: Nat64 = 0;
-            var v8: Nat64 = 0;
-
-            var t9: Nat32 = 0;
-            var t1: Nat32 = 0;
-            var t0: Nat32 = 0;
-            var t2: Nat32 = 0;
-            var t3: Nat32 = 0;
-            var t4: Nat32 = 0;
-            var t5: Nat32 = 0;
-            var t6: Nat32 = 0;
-            var t7: Nat32 = 0;
-
             assert(a.n[0] >> 30 == 0);
             assert(a.n[1] >> 30 == 0);
             assert(a.n[2] >> 30 == 0);
@@ -799,35 +776,35 @@ module {
                                         wrapping_add(
                                             wrapping_add(
                                                 wrapping_add(
-                                                    u64(a.n[0]) * u64(b.n[9]), 
-                                                    u64(a.n[1]) * u64(b.n[8])
+                                                    u64(a.n[0]) *% u64(b.n[9]), 
+                                                    u64(a.n[1]) *% u64(b.n[8])
                                                 ), 
-                                                u64(a.n[2]) * u64(b.n[7])
+                                                u64(a.n[2]) *% u64(b.n[7])
                                             ), 
-                                            u64(a.n[3]) * u64(b.n[6])
+                                            u64(a.n[3]) *% u64(b.n[6])
                                         ), 
-                                        u64(a.n[4]) * u64(b.n[5])
+                                        u64(a.n[4]) *% u64(b.n[5])
                                     ), 
-                                    u64(a.n[5]) * u64(b.n[4])
+                                    u64(a.n[5]) *% u64(b.n[4])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[3])
+                                u64(a.n[6]) *% u64(b.n[3])
                             ), 
-                            u64(a.n[7]) * u64(b.n[2])
+                            u64(a.n[7]) *% u64(b.n[2])
                         ), 
-                        u64(a.n[8]) * u64(b.n[1])
+                        u64(a.n[8]) *% u64(b.n[1])
                     ), 
-                    u64(a.n[9]) * u64(b.n[0])
+                    u64(a.n[9]) *% u64(b.n[0])
                 );
-            // assert(d, 64);
+            // assert(d >> 64 == 0);
 
             /* [d 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
-            t9 := u64u32(d & M);
+            let t9 = u64u32(d & M);
             d >>= 26;
             assert(t9 >> 26 == 0);
             assert(d >> 38 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
 
-            c := u64(a.n[0]) * u64(b.n[0]);
+            c := u64(a.n[0]) *% u64(b.n[0]);
             assert(c >> 60 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p9 0 0 0 0 0 0 0 0 p0] */
 
@@ -841,36 +818,36 @@ module {
                                             wrapping_add(
                                                 wrapping_add(
                                                     d,
-                                                    u64(a.n[1]) * u64(b.n[9])
+                                                    u64(a.n[1]) *% u64(b.n[9])
                                                 ), 
-                                                u64(a.n[2]) * u64(b.n[8])
+                                                u64(a.n[2]) *% u64(b.n[8])
                                             ), 
-                                            u64(a.n[3]) * u64(b.n[7])
+                                            u64(a.n[3]) *% u64(b.n[7])
                                         ), 
-                                        u64(a.n[4]) * u64(b.n[6])
+                                        u64(a.n[4]) *% u64(b.n[6])
                                     ), 
-                                    u64(a.n[5]) * u64(b.n[5])
+                                    u64(a.n[5]) *% u64(b.n[5])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[4])
+                                u64(a.n[6]) *% u64(b.n[4])
                             ), 
-                            u64(a.n[7]) * u64(b.n[3])
+                            u64(a.n[7]) *% u64(b.n[3])
                         ), 
-                        u64(a.n[8]) * u64(b.n[2])
+                        u64(a.n[8]) *% u64(b.n[2])
                     ), 
-                    u64(a.n[9]) * u64(b.n[1])
+                    u64(a.n[9]) *% u64(b.n[1])
                 );
             assert(d >> 63 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
-            v0 := d & M;
+            let v0 = d & M;
             d >>= 26;
-            c += v0 * R0;
+            c +%= v0 *% R0;
             assert(v0 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 61 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 0 c-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
-            t0 := u64u32(c & M);
+            let t0 = u64u32(c & M);
             c >>= 26;
-            c += v0 * R1;
+            c +%= v0 *% R1;
 
             assert(t0 >> 26 == 0);
             assert(c >> 37 == 0);
@@ -880,9 +857,9 @@ module {
             c := wrapping_add(
                     wrapping_add(
                         c, 
-                        u64(a.n[0]) * u64(b.n[1])
+                        u64(a.n[0]) *% u64(b.n[1])
                     ),
-                    u64(a.n[1]) * u64(b.n[0])
+                    u64(a.n[1]) *% u64(b.n[0])
                 );
             assert(c >> 62 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 p1 p0] */
@@ -896,35 +873,35 @@ module {
                                         wrapping_add(
                                             wrapping_add(
                                                 d,
-                                                u64(a.n[2]) * u64(b.n[9])
+                                                u64(a.n[2]) *% u64(b.n[9])
                                             ), 
-                                            u64(a.n[3]) * u64(b.n[8])
+                                            u64(a.n[3]) *% u64(b.n[8])
                                         ), 
-                                        u64(a.n[4]) * u64(b.n[7])
+                                        u64(a.n[4]) *% u64(b.n[7])
                                     ), 
-                                    u64(a.n[5]) * u64(b.n[6])
+                                    u64(a.n[5]) *% u64(b.n[6])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[5])
+                                u64(a.n[6]) *% u64(b.n[5])
                             ), 
-                            u64(a.n[7]) * u64(b.n[4])
+                            u64(a.n[7]) *% u64(b.n[4])
                         ), 
-                        u64(a.n[8]) * u64(b.n[3])
+                        u64(a.n[8]) *% u64(b.n[3])
                     ), 
-                    u64(a.n[9]) * u64(b.n[2])
+                    u64(a.n[9]) *% u64(b.n[2])
                 );
 
             assert(d >> 63 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
-            v1 := d & M;
+            let v1 = d & M;
             d >>= 26;
-            c += v1 * R0;
+            c +%= v1 *% R0;
             assert(v1 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 0 c-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
-            t1 := u64u32(c & M);
+            let t1 = u64u32(c & M);
             c >>= 26;
-            c += v1 * R1;
+            c +%= v1 *% R1;
             assert(t1 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 c-u1*R1 t1-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
@@ -934,11 +911,11 @@ module {
                     wrapping_add(
                         wrapping_add(
                             c, 
-                            u64(a.n[0]) * u64(b.n[2])
+                            u64(a.n[0]) *% u64(b.n[2])
                         ),
-                        u64(a.n[1]) * u64(b.n[1])
+                        u64(a.n[1]) *% u64(b.n[1])
                     ),
-                    u64(a.n[2]) * u64(b.n[0])
+                    u64(a.n[2]) *% u64(b.n[0])
                 );
 
             assert(c >> 62 == 0);
@@ -952,33 +929,33 @@ module {
                                     wrapping_add(
                                         wrapping_add(
                                             d,
-                                            u64(a.n[3]) * u64(b.n[9])
+                                            u64(a.n[3]) *% u64(b.n[9])
                                         ), 
-                                        u64(a.n[4]) * u64(b.n[8])
+                                        u64(a.n[4]) *% u64(b.n[8])
                                     ), 
-                                    u64(a.n[5]) * u64(b.n[7])
+                                    u64(a.n[5]) *% u64(b.n[7])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[6])
+                                u64(a.n[6]) *% u64(b.n[6])
                             ), 
-                            u64(a.n[7]) * u64(b.n[5])
+                            u64(a.n[7]) *% u64(b.n[5])
                         ), 
-                        u64(a.n[8]) * u64(b.n[4])
+                        u64(a.n[8]) *% u64(b.n[4])
                     ), 
-                    u64(a.n[9]) * u64(b.n[3])
+                    u64(a.n[9]) *% u64(b.n[3])
                 );
 
             assert(d >> 63 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
-            v2 := d & M;
+            let v2 = d & M;
             d >>= 26;
-            c += v2 * R0;
+            c +%= v2 *% R0;
             assert(v2 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 0 c-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
-            t2 := u64u32(c & M) ;
+            let t2 = u64u32(c & M) ;
             c >>= 26;
-            c += v2 * R1;
+            c +%= v2 *% R1;
             assert(t2 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 c-u2*R1 t2-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
@@ -989,13 +966,13 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 c, 
-                                u64(a.n[0]) * u64(b.n[3])
+                                u64(a.n[0]) *% u64(b.n[3])
                             ),
-                            u64(a.n[1]) * u64(b.n[2])
+                            u64(a.n[1]) *% u64(b.n[2])
                         ),
-                        u64(a.n[2]) * u64(b.n[1])
+                        u64(a.n[2]) *% u64(b.n[1])
                     ),
-                    u64(a.n[3]) * u64(b.n[0])
+                    u64(a.n[3]) *% u64(b.n[0])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
@@ -1006,31 +983,31 @@ module {
                                 wrapping_add(
                                     wrapping_add(
                                         d,
-                                        u64(a.n[4]) * u64(b.n[9])
+                                        u64(a.n[4]) *% u64(b.n[9])
                                     ), 
-                                    u64(a.n[5]) * u64(b.n[8])
+                                    u64(a.n[5]) *% u64(b.n[8])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[7])
+                                u64(a.n[6]) *% u64(b.n[7])
                             ), 
-                            u64(a.n[7]) * u64(b.n[6])
+                            u64(a.n[7]) *% u64(b.n[6])
                         ), 
-                        u64(a.n[8]) * u64(b.n[5])
+                        u64(a.n[8]) *% u64(b.n[5])
                     ), 
-                    u64(a.n[9]) * u64(b.n[4])
+                    u64(a.n[9]) *% u64(b.n[4])
                 );
 
             assert(d >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
-            v3 := d & M;
+            let v3 = d & M;
             d >>= 26;
-            c += v3 * R0;
+            c +%= v3 *% R0;
             assert(v3 >> 26 == 0);
             assert(d >> 37 == 0);
             // assert(c, 64);
             /* [d u3 0 0 0 t9 0 0 0 0 0 c-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
-            t3 := u64u32(c & M);
+            let t3 = u64u32(c & M);
             c >>= 26;
-            c += v3 * R1;
+            c +%= v3 *% R1;
             assert(t3 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u3 0 0 0 t9 0 0 0 0 c-u3*R1 t3-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
@@ -1042,15 +1019,15 @@ module {
                             wrapping_add(
                                 wrapping_add(
                                     c, 
-                                    u64(a.n[0]) * u64(b.n[4])
+                                    u64(a.n[0]) *% u64(b.n[4])
                                 ),
-                                u64(a.n[1]) * u64(b.n[3])
+                                u64(a.n[1]) *% u64(b.n[3])
                             ),
-                            u64(a.n[2]) * u64(b.n[2])
+                            u64(a.n[2]) *% u64(b.n[2])
                         ),
-                        u64(a.n[3]) * u64(b.n[1])
+                        u64(a.n[3]) *% u64(b.n[1])
                     ),
-                    u64(a.n[4]) * u64(b.n[0])
+                    u64(a.n[4]) *% u64(b.n[0])
                 );
 
             assert(c >> 63 == 0);
@@ -1061,29 +1038,29 @@ module {
                             wrapping_add(
                                 wrapping_add(
                                     d,
-                                    u64(a.n[5]) * u64(b.n[9])
+                                    u64(a.n[5]) *% u64(b.n[9])
                                 ), 
-                                u64(a.n[6]) * u64(b.n[8])
+                                u64(a.n[6]) *% u64(b.n[8])
                             ), 
-                            u64(a.n[7]) * u64(b.n[7])
+                            u64(a.n[7]) *% u64(b.n[7])
                         ), 
-                        u64(a.n[8]) * u64(b.n[6])
+                        u64(a.n[8]) *% u64(b.n[6])
                     ), 
-                    u64(a.n[9]) * u64(b.n[5])
+                    u64(a.n[9]) *% u64(b.n[5])
                 );
 
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
-            v4 := d & M;
+            let v4 = d & M;
             d >>= 26;
-            c += v4 * R0;
+            c +%= v4 *% R0;
             assert(v4 >> 26 == 0);
             assert(d >> 36 == 0);
             // assert(c, 64);
             /* [d u4 0 0 0 0 t9 0 0 0 0 c-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
-            t4 := u64u32(c & M);
+            let t4 = u64u32(c & M);
             c >>= 26;
-            c += v4 * R1;
+            c +%= v4 *% R1;
             assert(t4 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u4 0 0 0 0 t9 0 0 0 c-u4*R1 t4-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
@@ -1096,17 +1073,17 @@ module {
                                 wrapping_add(
                                     wrapping_add(
                                         c, 
-                                        u64(a.n[0]) * u64(b.n[5])
+                                        u64(a.n[0]) *% u64(b.n[5])
                                     ),
-                                    u64(a.n[1]) * u64(b.n[4])
+                                    u64(a.n[1]) *% u64(b.n[4])
                                 ),
-                                u64(a.n[2]) * u64(b.n[3])
+                                u64(a.n[2]) *% u64(b.n[3])
                             ),
-                            u64(a.n[3]) * u64(b.n[2])
+                            u64(a.n[3]) *% u64(b.n[2])
                         ),
-                        u64(a.n[4]) * u64(b.n[1])
+                        u64(a.n[4]) *% u64(b.n[1])
                     ),
-                    u64(a.n[5]) * u64(b.n[0])
+                    u64(a.n[5]) *% u64(b.n[0])
                 );
 
             assert(c >> 63 == 0);
@@ -1116,26 +1093,26 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 d,
-                                u64(a.n[6]) * u64(b.n[9])
+                                u64(a.n[6]) *% u64(b.n[9])
                             ), 
-                            u64(a.n[7]) * u64(b.n[8])
+                            u64(a.n[7]) *% u64(b.n[8])
                         ), 
-                        u64(a.n[8]) * u64(b.n[7])
+                        u64(a.n[8]) *% u64(b.n[7])
                     ), 
-                    u64(a.n[9]) * u64(b.n[6])
+                    u64(a.n[9]) *% u64(b.n[6])
                 );
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
-            v5 := d & M;
+            let v5 = d & M;
             d >>= 26;
-            c += v5 * R0;
+            c +%= v5 *% R0;
             assert(v5 >> 26 == 0);
             assert(d >> 36 == 0);
             // assert(c, 64);
             /* [d u5 0 0 0 0 0 t9 0 0 0 c-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
-            t5 := u64u32(c & M);
+            let t5 = u64u32(c & M);
             c >>= 26;
-            c += v5 * R1;
+            c +%= v5 *% R1;
             assert(t5 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u5 0 0 0 0 0 t9 0 0 c-u5*R1 t5-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
@@ -1149,19 +1126,19 @@ module {
                                     wrapping_add(
                                         wrapping_add(
                                             c, 
-                                            u64(a.n[0]) * u64(b.n[6])
+                                            u64(a.n[0]) *% u64(b.n[6])
                                         ),
-                                        u64(a.n[1]) * u64(b.n[5])
+                                        u64(a.n[1]) *% u64(b.n[5])
                                     ),
-                                    u64(a.n[2]) * u64(b.n[4])
+                                    u64(a.n[2]) *% u64(b.n[4])
                                 ),
-                                u64(a.n[3]) * u64(b.n[3])
+                                u64(a.n[3]) *% u64(b.n[3])
                             ),
-                            u64(a.n[4]) * u64(b.n[2])
+                            u64(a.n[4]) *% u64(b.n[2])
                         ),
-                        u64(a.n[5]) * u64(b.n[1])
+                        u64(a.n[5]) *% u64(b.n[1])
                     ),
-                    u64(a.n[6]) * u64(b.n[0])
+                    u64(a.n[6]) *% u64(b.n[0])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
@@ -1169,24 +1146,24 @@ module {
                     wrapping_add(
                         wrapping_add(
                             d, 
-                            u64(a.n[7]) * u64(b.n[9])
+                            u64(a.n[7]) *% u64(b.n[9])
                         ), 
-                        u64(a.n[8]) * u64(b.n[8])
+                        u64(a.n[8]) *% u64(b.n[8])
                     ), 
-                    u64(a.n[9]) * u64(b.n[7])
+                    u64(a.n[9]) *% u64(b.n[7])
                 );
             assert(d >> 61 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
-            v6 := d & M;
+            let v6 = d & M;
             d >>= 26;
-            c += v6 * R0;
+            c +%= v6 *% R0;
             assert(v6 >> 26 == 0);
             assert(d >> 35 == 0);
             // assert(c, 64);
             /* [d u6 0 0 0 0 0 0 t9 0 0 c-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
-            t6 := u64u32(c & M);
+            let t6 = u64u32(c & M);
             c >>= 26;
-            c += v6 * R1;
+            c +%= v6 *% R1;
             assert(t6 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u6 0 0 0 0 0 0 t9 0 c-u6*R1 t6-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
@@ -1201,21 +1178,21 @@ module {
                                         wrapping_add(
                                             wrapping_add(
                                                 c, 
-                                                u64(a.n[0]) * u64(b.n[7])
+                                                u64(a.n[0]) *% u64(b.n[7])
                                             ),
-                                            u64(a.n[1]) * u64(b.n[6])
+                                            u64(a.n[1]) *% u64(b.n[6])
                                         ),
-                                        u64(a.n[2]) * u64(b.n[5])
+                                        u64(a.n[2]) *% u64(b.n[5])
                                     ),
-                                    u64(a.n[3]) * u64(b.n[4])
+                                    u64(a.n[3]) *% u64(b.n[4])
                                 ),
-                                u64(a.n[4]) * u64(b.n[3])
+                                u64(a.n[4]) *% u64(b.n[3])
                             ),
-                            u64(a.n[5]) * u64(b.n[2])
+                            u64(a.n[5]) *% u64(b.n[2])
                         ),
-                        u64(a.n[6]) * u64(b.n[1])
+                        u64(a.n[6]) *% u64(b.n[1])
                     ),
-                    u64(a.n[7]) * u64(b.n[0])
+                    u64(a.n[7]) *% u64(b.n[0])
                 );
 
             // assert(c, 64);
@@ -1224,23 +1201,23 @@ module {
             d := wrapping_add(
                     wrapping_add(
                         d, 
-                        u64(a.n[8]) * u64(b.n[9])
+                        u64(a.n[8]) *% u64(b.n[9])
                     ), 
-                    u64(a.n[9]) * u64(b.n[8])
+                    u64(a.n[9]) *% u64(b.n[8])
                 );
             assert(d >> 58 == 0);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
-            v7 := d & M;
+            let v7 = d & M;
             d >>= 26;
-            c += v7 * R0;
+            c +%= v7 *% R0;
             assert(v7 >> 26 == 0);
             assert(d >> 32 == 0);
             // assert(c, 64);
             assert(c <= 0x800001703fffc2f7);
             /* [d u7 0 0 0 0 0 0 0 t9 0 c-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
-            t7 := u64u32(c & M);
+            let t7 = u64u32(c & M);
             c >>= 26;
-            c += v7 * R1;
+            c +%= v7 *% R1;
             assert(t7 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u7 0 0 0 0 0 0 0 t9 c-u7*R1 t7-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
@@ -1256,23 +1233,23 @@ module {
                                             wrapping_add(
                                                 wrapping_add(
                                                     c, 
-                                                    u64(a.n[0]) * u64(b.n[8])
+                                                    u64(a.n[0]) *% u64(b.n[8])
                                                 ),
-                                                u64(a.n[1]) * u64(b.n[7])
+                                                u64(a.n[1]) *% u64(b.n[7])
                                             ),
-                                            u64(a.n[2]) * u64(b.n[6])
+                                            u64(a.n[2]) *% u64(b.n[6])
                                         ),
-                                        u64(a.n[3]) * u64(b.n[5])
+                                        u64(a.n[3]) *% u64(b.n[5])
                                     ),
-                                    u64(a.n[4]) * u64(b.n[4])
+                                    u64(a.n[4]) *% u64(b.n[4])
                                 ),
-                                u64(a.n[5]) * u64(b.n[3])
+                                u64(a.n[5]) *% u64(b.n[3])
                             ),
-                            u64(a.n[6]) * u64(b.n[2])
+                            u64(a.n[6]) *% u64(b.n[2])
                         ),
-                        u64(a.n[7]) * u64(b.n[1])
+                        u64(a.n[7]) *% u64(b.n[1])
                     ),
-                    u64(a.n[8]) * u64(b.n[0])
+                    u64(a.n[8]) *% u64(b.n[0])
                 );
 
             // assert(c, 64);
@@ -1280,13 +1257,13 @@ module {
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     d, 
-                    u64(a.n[9]) * u64(b.n[9])
+                    u64(a.n[9]) *% u64(b.n[9])
                 );
             assert(d >> 57 == 0);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            v8 := d & M;
+            let v8 = d & M;
             d >>= 26;
-            c += v8 * R0;
+            c +%= v8 *% R0;
             assert(v8 >> 26 == 0);
             assert(d >> 31 == 0);
             // assert(c, 64);
@@ -1311,24 +1288,24 @@ module {
 
             n[8] := u64u32(c & M);
             c >>= 26;
-            c += v8 * R1;
+            c +%= v8 *% R1;
             assert(n[8] >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9+c-u8*R1 r8-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 0 t9+c r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            c += d * R0 + u64(t9);
+            c +%= d *% R0 + u64(t9);
             assert(c >> 45 == 0);
             /* [d 0 0 0 0 0 0 0 0 0 c-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[9] := u64u32(c & (M >> 4));
             c >>= 22;
-            c += d * (R1 << 4);
+            c +%= d *% (R1 << 4);
             assert(n[9] >> 22 == 0);
             assert(c >> 46 == 0);
             /* [d 0 0 0 0 0 0 0 0 r9+((c-d*R1<<4)<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 -d*R1 r9+(c<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
-            d := c * (R0 >> 4) + u64(t0);
+            d := c *% (R0 >> 4) + u64(t0);
             assert(d >> 56 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 d-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[0] := u64u32(d & M);
@@ -1336,7 +1313,7 @@ module {
             assert(n[0] >> 26 == 0);
             assert(d >> 30 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1+d r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d += c * (R1 >> 4) + u64(t1);
+            d +%= c *% (R1 >> 4) + u64(t1);
             assert(d >> 53 == 0);
             assert(d <= 0x10000003ffffbf);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 d-c*R1>>4 r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
@@ -1347,7 +1324,7 @@ module {
             assert(d >> 27 == 0);
             assert(d <= 0x4000000);
             /* [r9 r8 r7 r6 r5 r4 r3 t2+d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d += u64(t2);
+            d +%= u64(t2);
             assert(d >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[2] := u64u32(d);
@@ -1404,14 +1381,14 @@ module {
                     wrapping_add(
                         wrapping_add(
                             wrapping_add(
-                                u64(a.n[0] * 2) * u64(a.n[9]), 
-                                u64(a.n[1] * 2) * u64(a.n[8])
+                                u64(a.n[0] *% 2) *% u64(a.n[9]), 
+                                u64(a.n[1] *% 2) *% u64(a.n[8])
                             ), 
-                            u64(a.n[2] * 2) * u64(a.n[7])
+                            u64(a.n[2] *% 2) *% u64(a.n[7])
                         ), 
-                        u64(a.n[3] * 2) * u64(a.n[6])
+                        u64(a.n[3] *% 2) *% u64(a.n[6])
                     ), 
-                    u64(a.n[4] * 2) * u64(a.n[5])
+                    u64(a.n[4] *% 2) *% u64(a.n[5])
                 );
             // assert(d >> 64 == 0);
             /* [d 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
@@ -1421,7 +1398,7 @@ module {
             assert(d >> 38 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
 
-            c := u64(a.n[0]) * u64(a.n[0]);
+            c := u64(a.n[0]) *% u64(a.n[0]);
             assert(c >> 60 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p9 0 0 0 0 0 0 0 0 p0] */
             d := wrapping_add(
@@ -1430,29 +1407,29 @@ module {
                             wrapping_add(
                                 wrapping_add(
                                     d,
-                                    u64(a.n[1] * 2) * u64(a.n[9])
+                                    u64(a.n[1] *% 2) *% u64(a.n[9])
                                 ), 
-                                u64(a.n[2] * 2) * u64(a.n[8])
+                                u64(a.n[2] *% 2) *% u64(a.n[8])
                             ), 
-                            u64(a.n[3] * 2) * u64(a.n[7])
+                            u64(a.n[3] *% 2) *% u64(a.n[7])
                         ), 
-                        u64(a.n[4] * 2) * u64(a.n[6])
+                        u64(a.n[4] *% 2) *% u64(a.n[6])
                     ),
-                    u64(a.n[5]) * u64(a.n[5])
+                    u64(a.n[5]) *% u64(a.n[5])
                 );
 
             assert(d >> 63 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             v0 := d & M;
             d >>= 26;
-            c += v0 * R0;
+            c +%= v0 *% R0;
             assert(v0 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 61 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 0 c-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
             t0 := u64u32(c & M);
             c >>= 26;
-            c += v0 * R1;
+            c +%= v0 *% R1;
             assert(t0 >> 26 == 0);
             assert(c >> 37 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 c-u0*R1 t0-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
@@ -1460,7 +1437,7 @@ module {
 
             c := wrapping_add(
                     c,
-                    u64(a.n[0] * 2) * u64(a.n[1])
+                    u64(a.n[0] *% 2) *% u64(a.n[1])
                 );
             assert(c >> 62 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p10 p9 0 0 0 0 0 0 0 p1 p0] */
@@ -1470,27 +1447,27 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 d,
-                                u64(a.n[2] * 2) * u64(a.n[9])
+                                u64(a.n[2] *% 2) *% u64(a.n[9])
                             ), 
-                            u64(a.n[3] * 2) * u64(a.n[8])
+                            u64(a.n[3] *% 2) *% u64(a.n[8])
                         ), 
-                        u64(a.n[4] * 2) * u64(a.n[7])
+                        u64(a.n[4] *% 2) *% u64(a.n[7])
                     ),
-                    u64(a.n[5] * 2) * u64(a.n[6])
+                    u64(a.n[5] *% 2) *% u64(a.n[6])
                 );
             
             assert(d >> 63 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             v1 := d & M;
             d >>= 26;
-            c += v1 * R0;
+            c +%= v1 *% R0;
             assert(v1 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 0 c-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
             t1 := u64u32(c & M);
             c >>= 26;
-            c += v1 * R1;
+            c +%= v1 *% R1;
             assert(t1 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 c-u1*R1 t1-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
@@ -1499,9 +1476,9 @@ module {
             c := wrapping_add(
                     wrapping_add(
                         c,
-                        u64(a.n[0] * 2) * u64(a.n[2])
+                        u64(a.n[0] *% 2) *% u64(a.n[2])
                     ),
-                    u64(a.n[1]) * u64(a.n[1])
+                    u64(a.n[1]) *% u64(a.n[1])
                 );
 
             assert(c >> 62 == 0);
@@ -1511,26 +1488,26 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 d,
-                                u64(a.n[3] * 2) * u64(a.n[9])
+                                u64(a.n[3] *% 2) *% u64(a.n[9])
                             ), 
-                            u64(a.n[4] * 2) * u64(a.n[8])
+                            u64(a.n[4] *% 2) *% u64(a.n[8])
                         ), 
-                        u64(a.n[5] * 2) * u64(a.n[7])
+                        u64(a.n[5] *% 2) *% u64(a.n[7])
                     ),
-                    u64(a.n[6]) * u64(a.n[6])
+                    u64(a.n[6]) *% u64(a.n[6])
                 );
             assert(d >> 63 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             v2 := d & M;
             d >>= 26;
-            c += v2 * R0;
+            c +%= v2 *% R0;
             assert(v2 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 0 c-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
             t2 := u64u32(c & M);
             c >>= 26;
-            c += v2 * R1;
+            c +%= v2 *% R1;
             assert(t2 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 c-u2*R1 t2-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
@@ -1539,9 +1516,9 @@ module {
             c := wrapping_add(
                     wrapping_add(
                         c,
-                        u64(a.n[0] * 2) * u64(a.n[3])
+                        u64(a.n[0] *% 2) *% u64(a.n[3])
                     ),
-                    u64(a.n[1] * 2) * u64(a.n[2])
+                    u64(a.n[1] *% 2) *% u64(a.n[2])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
@@ -1549,24 +1526,24 @@ module {
                     wrapping_add(
                         wrapping_add(
                             d, 
-                            u64(a.n[4] * 2) * u64(a.n[9])
+                            u64(a.n[4] *% 2) *% u64(a.n[9])
                         ), 
-                        u64(a.n[5] * 2) * u64(a.n[8])
+                        u64(a.n[5] *% 2) *% u64(a.n[8])
                     ),
-                    u64(a.n[6] * 2) * u64(a.n[7])
+                    u64(a.n[6] *% 2) *% u64(a.n[7])
                 );
             assert(d >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             v3 := d & M;
             d >>= 26;
-            c += v3 * R0;
+            c +%= v3 *% R0;
             assert(v3 >> 26 == 0);
             assert(d >> 37 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u3 0 0 0 t9 0 0 0 0 0 c-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
             t3 := u64u32(c & M);
             c >>= 26;
-            c += v3 * R1;
+            c +%= v3 *% R1;
             assert(t3 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u3 0 0 0 t9 0 0 0 0 c-u3*R1 t3-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
@@ -1576,11 +1553,11 @@ module {
                     wrapping_add(
                         wrapping_add(
                             c,
-                            u64(a.n[0] * 2) * u64(a.n[4])
+                            u64(a.n[0] *% 2) *% u64(a.n[4])
                         ),
-                        u64(a.n[1] * 2) * u64(a.n[3])
+                        u64(a.n[1] *% 2) *% u64(a.n[3])
                     ),
-                    u64(a.n[2]) * u64(a.n[2])
+                    u64(a.n[2]) *% u64(a.n[2])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
@@ -1588,24 +1565,24 @@ module {
                     wrapping_add(
                         wrapping_add(
                             d, 
-                            u64(a.n[5] * 2) * u64(a.n[9])
+                            u64(a.n[5] *% 2) *% u64(a.n[9])
                         ), 
-                        u64(a.n[6] * 2) * u64(a.n[8])
+                        u64(a.n[6] *% 2) *% u64(a.n[8])
                     ),
-                    u64(a.n[7]) * u64(a.n[7])
+                    u64(a.n[7]) *% u64(a.n[7])
                 );          
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             v4 := d & M;
             d >>= 26;
-            c += v4 * R0;
+            c +%= v4 *% R0;
             assert(v4 >> 26 == 0);
             assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u4 0 0 0 0 t9 0 0 0 0 c-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
             t4 := u64u32(c & M);
             c >>= 26;
-            c += v4 * R1;
+            c +%= v4 *% R1;
             assert(t4 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u4 0 0 0 0 t9 0 0 0 c-u4*R1 t4-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
@@ -1615,33 +1592,33 @@ module {
                     wrapping_add(
                         wrapping_add(
                             c,
-                            u64(a.n[0] * 2) * u64(a.n[5])
+                            u64(a.n[0] *% 2) *% u64(a.n[5])
                         ),
-                        u64(a.n[1] * 2) * u64(a.n[4])
+                        u64(a.n[1] *% 2) *% u64(a.n[4])
                     ),
-                    u64(a.n[2] * 2) * u64(a.n[3])
+                    u64(a.n[2] *% 2) *% u64(a.n[3])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
                         d, 
-                        u64(a.n[6] * 2) * u64(a.n[9])
+                        u64(a.n[6] *% 2) *% u64(a.n[9])
                     ),
-                    u64(a.n[7] * 2) * u64(a.n[8])
+                    u64(a.n[7] *% 2) *% u64(a.n[8])
                 );  
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             v5 := d & M;
             d >>= 26;
-            c += v5 * R0;
+            c +%= v5 *% R0;
             assert(v5 >> 26 == 0);
             assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u5 0 0 0 0 0 t9 0 0 0 c-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
             t5 := u64u32(c & M);
             c >>= 26;
-            c += v5 * R1;
+            c +%= v5 *% R1;
             assert(t5 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u5 0 0 0 0 0 t9 0 0 c-u5*R1 t5-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
@@ -1652,35 +1629,35 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 c,
-                                u64(a.n[0] * 2) * u64(a.n[6])
+                                u64(a.n[0] *% 2) *% u64(a.n[6])
                             ),
-                            u64(a.n[1] * 2) * u64(a.n[5])
+                            u64(a.n[1] *% 2) *% u64(a.n[5])
                         ),
-                        u64(a.n[2] * 2) * u64(a.n[4])
+                        u64(a.n[2] *% 2) *% u64(a.n[4])
                     ),
-                    u64(a.n[3]) * u64(a.n[3])
+                    u64(a.n[3]) *% u64(a.n[3])
                 );
             assert(c >> 63 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             d := wrapping_add(
                     wrapping_add(
                         d, 
-                        u64(a.n[7] * 2) * u64(a.n[9])
+                        u64(a.n[7] *% 2) *% u64(a.n[9])
                     ),
-                    u64(a.n[8]) * u64(a.n[8])
+                    u64(a.n[8]) *% u64(a.n[8])
                 );
             assert(d >> 61 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             v6 := d & M;
             d >>= 26;
-            c += v6 * R0;
+            c +%= v6 *% R0;
             assert(v6 >> 26 == 0);
             assert(d >> 35 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u6 0 0 0 0 0 0 t9 0 0 c-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
             t6 := u64u32(c & M);
             c >>= 26;
-            c += v6 * R1;
+            c +%= v6 *% R1;
             assert(t6 >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u6 0 0 0 0 0 0 t9 0 c-u6*R1 t6-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
@@ -1691,24 +1668,24 @@ module {
                         wrapping_add(
                             wrapping_add(
                                 c,
-                                u64(a.n[0] * 2) * u64(a.n[7])
+                                u64(a.n[0] *% 2) *% u64(a.n[7])
                             ),
-                            u64(a.n[1] * 2) * u64(a.n[6])
+                            u64(a.n[1] *% 2) *% u64(a.n[6])
                         ),
-                        u64(a.n[2] * 2) * u64(a.n[5])
+                        u64(a.n[2] *% 2) *% u64(a.n[5])
                     ),
-                    u64(a.n[3] * 2) * u64(a.n[4])
+                    u64(a.n[3] *% 2) *% u64(a.n[4])
                 );
 
             // debug_assert_bits!(c, 64);
             assert(c <= 0x8000007C00000007);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d := wrapping_add(d, u64(a.n[8] * 2) * u64(a.n[9]));
+            d := wrapping_add(d, u64(a.n[8] *% 2) *% u64(a.n[9]));
             assert(d >> 58 == 0);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             v7 := d & M;
             d >>= 26;
-            c += v7 * R0;
+            c +%= v7 *% R0;
             assert(v7 >> 26 == 0);
             assert(d >> 32 == 0);
             /* debug_assert_bits!(c, 64); */
@@ -1716,7 +1693,7 @@ module {
             /* [d u7 0 0 0 0 0 0 0 t9 0 c-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
             t7 := u64u32(c & M);
             c >>= 26;
-            c += v7 * R1;
+            c +%= v7 *% R1;
             assert(t7 >> 26 == 0);
             assert(c >> 38 == 0);
             /* [d u7 0 0 0 0 0 0 0 t9 c-u7*R1 t7-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
@@ -1728,25 +1705,25 @@ module {
                             wrapping_add(
                                 wrapping_add(
                                     c,
-                                    u64(a.n[0] * 2) * u64(a.n[8])
+                                    u64(a.n[0] *% 2) *% u64(a.n[8])
                                 ),
-                                u64(a.n[1] * 2) * u64(a.n[7])
+                                u64(a.n[1] *% 2) *% u64(a.n[7])
                             ),
-                            u64(a.n[2] * 2) * u64(a.n[6])
+                            u64(a.n[2] *% 2) *% u64(a.n[6])
                         ),
-                        u64(a.n[3] * 2) * u64(a.n[5])
+                        u64(a.n[3] *% 2) *% u64(a.n[5])
                     ), 
-                    u64(a.n[4]) * u64(a.n[4])
+                    u64(a.n[4]) *% u64(a.n[4])
                 );
             // debug_assert_bits!(c, 64);
             assert(c <= 0x9000007B80000008);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d := wrapping_add(d, u64(a.n[9]) * u64(a.n[9]));
+            d := wrapping_add(d, u64(a.n[9]) *% u64(a.n[9]));
             assert(d >> 57 == 0);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             v8 := d & M;
             d >>= 26;
-            c += v8 * R0;
+            c +%= v8 *% R0;
             assert(v8 >> 26 == 0);
             assert(d >> 31 == 0);
             /* debug_assert_bits!(c, 64); */
@@ -1771,24 +1748,24 @@ module {
 
             n[8] := u64u32(c & M);
             c >>= 26;
-            c += v8 * R1;
+            c +%= v8 *% R1;
             assert(n[8] >> 26 == 0);
             assert(c >> 39 == 0);
             /* [d u8 0 0 0 0 0 0 0 0 t9+c-u8*R1 r8-u8*R0 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 0 0 t9+c r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            c += d * R0 + u64(t9);
+            c +%= d *% R0 + u64(t9);
             assert(c >> 45 == 0);
             /* [d 0 0 0 0 0 0 0 0 0 c-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[9] := u64u32(c & (M >> 4));
             c >>= 22;
-            c += d * (R1 << 4);
+            c +%= d *% (R1 << 4);
             assert(n[9] >> 22 == 0);
             assert(c >> 46 == 0);
             /* [d 0 0 0 0 0 0 0 0 r9+((c-d*R1<<4)<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [d 0 0 0 0 0 0 0 -d*R1 r9+(c<<22)-d*R0 r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
 
-            d := c * (R0 >> 4) + u64(t0);
+            d := c *% (R0 >> 4) + u64(t0);
             assert(d >> 56 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1 d-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[0] := u64u32(d & M);
@@ -1796,7 +1773,7 @@ module {
             assert(n[0] >> 26 == 0);
             assert(d >> 30 == 0);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 t1+d r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d += c * (R1 >> 4) + u64(t1);
+            d +%= c *% (R1 >> 4) + u64(t1);
             assert(d >> 53 == 0);
             assert(d <= 0x10000003FFFFBF);
             /* [r9+(c<<22) r8 r7 r6 r5 r4 r3 t2 d-c*R1>>4 r0-c*R0>>4] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
@@ -1807,7 +1784,7 @@ module {
             assert(d >> 27 == 0);
             assert(d <= 0x4000000);
             /* [r9 r8 r7 r6 r5 r4 r3 t2+d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            d += u64(t2);
+            d +%= u64(t2);
             assert(d >> 27 == 0);
             /* [r9 r8 r7 r6 r5 r4 r3 d r1 r0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
             n[2] := u64u32(d);
@@ -1844,7 +1821,7 @@ module {
 
         public func sqr(): Field {
             let ret = Field();
-            let _self = self();
+            let _self = clone();
             ret.sqr_in_place(_self);
             ret
         };
@@ -1856,7 +1833,7 @@ module {
         /// guaranteed to be normalized). The result in r will always be a
         /// square itself.
         public func sqrt(): (Field, Bool) {
-            let _self = self();
+            let _self = clone();
             var x2 = sqr();
             x2 := x2.mul(_self);
 
@@ -1937,7 +1914,7 @@ module {
         /// another. Requires the input's magnitude to be at most 8. The
         /// output magnitude is 1 (but not guaranteed to be normalized).
         public func inv(): Field {
-            let _self = self();
+            let _self = clone();
             var x2 = _self.sqr();
             x2 := x2.mul(_self);
 
@@ -2058,25 +2035,25 @@ module {
 
         // Add
         public func add(other: Field): Field {
-            let ret = self();
+            let ret = clone();
             ret.add_assign(other);
             ret
         };
 
         // AddAssign
         public func add_assign(other: Field) {
-            n[0] += other.n[0];
-            n[1] += other.n[1];
-            n[2] += other.n[2];
-            n[3] += other.n[3];
-            n[4] += other.n[4];
-            n[5] += other.n[5];
-            n[6] += other.n[6];
-            n[7] += other.n[7];
-            n[8] += other.n[8];
-            n[9] += other.n[9];
+            n[0] +%= other.n[0];
+            n[1] +%= other.n[1];
+            n[2] +%= other.n[2];
+            n[3] +%= other.n[3];
+            n[4] +%= other.n[4];
+            n[5] +%= other.n[5];
+            n[6] +%= other.n[6];
+            n[7] +%= other.n[7];
+            n[8] +%= other.n[8];
+            n[9] +%= other.n[9];
 
-            magnitude += other.magnitude;
+            magnitude +%= other.magnitude;
             normalized := false;
             assert(verify());            
         };
@@ -2084,7 +2061,7 @@ module {
         // Mul
         public func mul(other: Field) : Field {
             let ret = Field();
-            let _self = self();
+            let _self = clone();
             ret.mul_in_place(_self, other);
             ret
         };
@@ -2092,7 +2069,7 @@ module {
         // MulAssign
         public func mul_assign(other: Field) {
             let ret = Field();
-            let _self = self();
+            let _self = clone();
             ret.mul_in_place(_self, other);
             assign_mut(ret)
         };

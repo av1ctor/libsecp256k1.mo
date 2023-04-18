@@ -25,7 +25,7 @@ module {
         public var y: Field = field.Field();
         public var infinity: Bool = false;
 
-        public func self(): Affine {
+        public func clone(): Affine {
             let ret = Affine();
             ret.x := x;
             ret.y := y;
@@ -108,7 +108,7 @@ module {
 
         public func neg(): Affine {
             let ret = Affine();
-            ret.neg_in_place(self());
+            ret.neg_in_place(clone());
             ret
         };
 
@@ -169,7 +169,7 @@ module {
         public var z: Field = field.Field();
         public var infinity: Bool = false;    
 
-        public func self(): Jacobian {
+        public func clone(): Jacobian {
             let ret = Jacobian();
             ret.x := x;
             ret.y := y;
@@ -225,7 +225,7 @@ module {
 
         public func neg(): Jacobian {
             let ret = Jacobian();
-            ret.neg_in_place(self());
+            ret.neg_in_place(clone());
             ret
         };
 
@@ -293,7 +293,7 @@ module {
 
         public func double_var(rzr: ?Field): Jacobian {
             let ret = Jacobian();
-            ret.double_var_in_place(self(), rzr);
+            ret.double_var_in_place(clone(), rzr);
             ret
         };
 
@@ -361,7 +361,7 @@ module {
 
         public func add_var(b: Jacobian, rzr: ?Field): Jacobian {
             let ret = Jacobian();
-            ret.add_var_in_place(self(), b, rzr);
+            ret.add_var_in_place(clone(), b, rzr);
             ret
         };
 
@@ -436,7 +436,7 @@ module {
 
         public func add_ge(b: Affine): Jacobian {
             let ret = Jacobian();
-            ret.add_ge_in_place(self(), b);
+            ret.add_ge_in_place(clone(), b);
             ret
         };
 
@@ -507,7 +507,7 @@ module {
 
         public func add_ge_var(b: Affine, rzr: ?Field): Jacobian {
             let ret = Jacobian();
-            ret.add_ge_var_in_place(self(), b, rzr);
+            ret.add_ge_var_in_place(clone(), b, rzr);
             ret
         };
 
@@ -572,7 +572,7 @@ module {
 
         public func add_zinv_var(b: Affine, bzinv: Field): Jacobian {
             let ret = Jacobian();
-            ret.add_zinv_var_in_place(self(), b, bzinv);
+            ret.add_zinv_var_in_place(clone(), b, bzinv);
             ret
         };
 

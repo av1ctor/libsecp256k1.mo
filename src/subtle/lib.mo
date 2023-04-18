@@ -4,7 +4,7 @@ module {
     public class Choice() {
         public var v: Nat8 = 0;
 
-        public func self(): Choice {
+        public func clone(): Choice {
             let ret = Choice();
             ret.v := v;
             ret

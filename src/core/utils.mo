@@ -54,28 +54,4 @@ module {
     public func boolu32(b: Bool): Nat32 {
         if b { 1 } else { 0 };
     };
-
-    public func array_ref<T>(arr: [T], offset: Nat, size: Nat): [T] {
-        let res = Buffer.Buffer<T>(size);
-
-        var i = 0;
-        while(i < size) {
-            res.add(arr[offset + i]);
-            i += 1;
-        };
-
-        return Buffer.toArray(res);
-    };
-
-    public func array_mut_ref<T>(arr: [var T], offset: Nat, size: Nat): [var T] {
-        let res = Buffer.Buffer<T>(size);
-
-        var i = 0;
-        while(i < size) {
-            res.add(arr[offset + i]);
-            i += 1;
-        };
-
-        return Buffer.toVarArray(res);
-    };
 };

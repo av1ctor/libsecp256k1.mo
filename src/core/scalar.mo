@@ -41,7 +41,7 @@ module {
     public class Scalar() {
         public let n: [var Nat32] = Array.init<Nat32>(8, 0);
 
-        public func self(): Scalar {
+        public func clone(): Scalar {
             let ret = Scalar();
             ret.n[0] := n[0];
             ret.n[1] := n[1];
@@ -107,13 +107,13 @@ module {
         /// Access bits from a scalar. Not constant time.
         public func bits_var(offset: Nat32, count: Nat32): Nat32 {
             assert(count < 32);
-            assert(offset + count <= 256);
-            if ((offset + count - 1) >> 5 == offset >> 5) {
+            assert(offset +% count <= 256);
+            if ((offset +% count - 1) >> 5 == offset >> 5) {
                 bits_32(offset, count)
             } else {
-                assert((offset >> 5) + 1 < 8);
+                assert((offset >> 5) +% 1 < 8);
                 ((n[Nat32.toNat(offset >> 5)] >> (offset & 0x1f))
-                    | (n[Nat32.toNat((offset >> 5) + 1)] << (32 - (offset & 0x1f))))
+                    | (n[Nat32.toNat((offset >> 5) +% 1)] << (32 - (offset & 0x1f))))
                     & ((1 << count) - 1)
             };
         };
@@ -141,35 +141,35 @@ module {
             let o = u8u64(overflow.unwrap_u8());
             var t: Nat64 = 0;
 
-            t := u64(n[0]) + o * u64(SECP256K1_N_C_0);
+            t := u64(n[0]) +% o *% u64(SECP256K1_N_C_0);
             n[0] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[1]) + o * u64(SECP256K1_N_C_1);
+            t +%= u64(n[1]) +% o *% u64(SECP256K1_N_C_1);
             n[1] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[2]) + o * u64(SECP256K1_N_C_2);
+            t +%= u64(n[2]) +% o *% u64(SECP256K1_N_C_2);
             n[2] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[3]) + o * u64(SECP256K1_N_C_3);
+            t +%= u64(n[3]) +% o *% u64(SECP256K1_N_C_3);
             n[3] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[4]) + o * u64(SECP256K1_N_C_4);
+            t +%= u64(n[4]) +% o *% u64(SECP256K1_N_C_4);
             n[4] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[5]);
+            t +%= u64(n[5]);
             n[5] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[6]);
+            t +%= u64(n[6]);
             n[6] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
 
-            t += u64(n[7]);
+            t +%= u64(n[7]);
             n[7] := u64u32(t & 0xFFFFFFFF);
         };
 
@@ -180,32 +180,32 @@ module {
             var bit: Nat32 = _bit;
             var t: Nat64 = 0;
             assert(bit < 256);
-            bit += (if flag { 0 } else { MaxU32 }) & 0x100;
-            t := u64(n[0]) + u64((if ((bit >> 5) == 0) { 1 } else { 0 }) << (bit & 0x1F));
+            bit +%= (if flag { 0 } else { MaxU32 }) & 0x100;
+            t := u64(n[0]) +% u64((if ((bit >> 5) == 0) { 1 } else { 0 }) << (bit & 0x1F));
             n[0] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[1]) + u64((if ((bit >> 5) == 1) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[1]) +% u64((if ((bit >> 5) == 1) { 1 } else { 0 }) << (bit & 0x1F));
             n[1] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[2]) + u64((if ((bit >> 5) == 2) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[2]) +% u64((if ((bit >> 5) == 2) { 1 } else { 0 }) << (bit & 0x1F));
             n[2] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[3]) + u64((if ((bit >> 5) == 3) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[3]) +% u64((if ((bit >> 5) == 3) { 1 } else { 0 }) << (bit & 0x1F));
             n[3] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[4]) + u64((if ((bit >> 5) == 4) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[4]) +% u64((if ((bit >> 5) == 4) { 1 } else { 0 }) << (bit & 0x1F));
             n[4] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[5]) + u64((if ((bit >> 5) == 5) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[5]) +% u64((if ((bit >> 5) == 5) { 1 } else { 0 }) << (bit & 0x1F));
             n[5] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[6]) + u64((if ((bit >> 5) == 6) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[6]) +% u64((if ((bit >> 5) == 6) { 1 } else { 0 }) << (bit & 0x1F));
             n[6] := u64u32(t & 0xFFFFFFFF);
             t >>= 32;
-            t += u64(n[7]) + u64((if ((bit >> 5) == 7) { 1 } else { 0 }) << (bit & 0x1F));
+            t +%= u64(n[7]) +% u64((if ((bit >> 5) == 7) { 1 } else { 0 }) << (bit & 0x1F));
             n[7] := u64u32(t & 0xFFFFFFFF);
             assert((t >> 32) == 0);
-            assert(not subtle.from(self().check_overflow()));
+            assert(not subtle.from(clone().check_overflow()));
         };
 
         /// Set a scalar from a big endian byte array, return whether it overflowed.
@@ -341,13 +341,13 @@ module {
 
         /// Conditionally negate a number, in constant time.
         public func cond_neg_assign(flag: Choice) {
-            let mask = MaxU32 * u32(flag.unwrap_u8());
+            let mask = MaxU32 *% u32(flag.unwrap_u8());
 
-            let nonzero = 0xFFFFFFFF * boolu64(not is_zero());
-            var t = 1 * u8u64(flag.unwrap_u8());
+            let nonzero = 0xFFFFFFFF *% boolu64(not is_zero());
+            var t = 1 *% u8u64(flag.unwrap_u8());
 
             for (i in Iter.range(0, 7)) { //0..8
-                t += u64(n[i] ^ mask) + u64(SECP256K1_N[i] & mask);
+                t +%= u64(n[i] ^ mask) +% u64(SECP256K1_N[i] & mask);
                 n[i] := u64u32(t & nonzero);
                 t >>= 32;
             };
@@ -880,7 +880,7 @@ module {
             m12 := c0;
 
             /* Reduce 385 bits into 258. */
-            /* p[0..8] = m[0..7] + m[8..12] * SECP256K1_N_C. */
+            /* p[0..8] = m[0..7] +% m[8..12] *% SECP256K1_N_C. */
             c0 := m0;
             c1 := 0;
             c2 := 0;
@@ -1203,33 +1203,33 @@ module {
                 p7 := _p7;
             };
 
-            p8 := c0 + m12;
+            p8 := c0 +% m12;
             assert(p8 <= 2);
 
             /* Reduce 258 bits into 256. */
-            /* r[0..7] = p[0..7] + p[8] * SECP256K1_N_C. */
-            c := u64(p0) + u64(SECP256K1_N_C_0) * u64(p8);
+            /* r[0..7] = p[0..7] +% p[8] *% SECP256K1_N_C. */
+            c := u64(p0) +% u64(SECP256K1_N_C_0) *% u64(p8);
             n[0] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p1) + u64(SECP256K1_N_C_1) * u64(p8);
+            c +%= u64(p1) +% u64(SECP256K1_N_C_1) *% u64(p8);
             n[1] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p2) + u64(SECP256K1_N_C_2) * u64(p8);
+            c +%= u64(p2) +% u64(SECP256K1_N_C_2) *% u64(p8);
             n[2] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p3) + u64(SECP256K1_N_C_3) * u64(p8);
+            c +%= u64(p3) +% u64(SECP256K1_N_C_3) *% u64(p8);
             n[3] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p4) + u64(p8);
+            c +%= u64(p4) +% u64(p8);
             n[4] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p5);
+            c +%= u64(p5);
             n[5] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p6);
+            c +%= u64(p6);
             n[6] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
-            c += u64(p7);
+            c +%= u64(p7);
             n[7] := u64u32(c & 0xFFFFFFFF);
             c >>= 32;
 
@@ -1243,7 +1243,7 @@ module {
             var c2: Nat32 = 0;
 
 
-            /* l[0..15] = a[0..7] * b[0..7]. */
+            /* l[0..15] = a[0..7] *% b[0..7]. */
             // muladd_fast!(n[0], b.n[0]);
             do {
                 let (_c0, _c1, _c2) = muladd_fast(c0, c1, c2, n[0], b.n[0]);
@@ -2339,13 +2339,13 @@ module {
         public func shr_int(_n: Nat32): Nat32 {
             var ret: Nat32 = 0;
             ret := n[0] & ((1 << _n) - 1);
-            n[0] := (n[0] >> _n) + (n[1] << (32 - _n));
-            n[1] := (n[1] >> _n) + (n[2] << (32 - _n));
-            n[2] := (n[2] >> _n) + (n[3] << (32 - _n));
-            n[3] := (n[3] >> _n) + (n[4] << (32 - _n));
-            n[4] := (n[4] >> _n) + (n[5] << (32 - _n));
-            n[5] := (n[5] >> _n) + (n[6] << (32 - _n));
-            n[6] := (n[6] >> _n) + (n[7] << (32 - _n));
+            n[0] := (n[0] >> _n) +% (n[1] << (32 - _n));
+            n[1] := (n[1] >> _n) +% (n[2] << (32 - _n));
+            n[2] := (n[2] >> _n) +% (n[3] << (32 - _n));
+            n[3] := (n[3] >> _n) +% (n[4] << (32 - _n));
+            n[4] := (n[4] >> _n) +% (n[5] << (32 - _n));
+            n[5] := (n[5] >> _n) +% (n[6] << (32 - _n));
+            n[6] := (n[6] >> _n) +% (n[7] << (32 - _n));
             n[7] >>= _n;
             ret
         };
@@ -2358,7 +2358,7 @@ module {
 
         public func sqr(): Scalar {
             let ret = Scalar();
-            ret.sqr_in_place(self());
+            ret.sqr_in_place(clone());
             ret
         };
 
@@ -2510,14 +2510,14 @@ module {
 
         public func add(other: Scalar): Scalar {
             add_assign(other);
-            self()
+            clone()
         };
 
         public func add_assign(other: Scalar) {
             var t: Nat64 = 0;
 
             for (i in Iter.range(0, 7)) {//0..8
-                t += u64(n[i]) + u64(other.n[i]);
+                t +%= u64(n[i]) +% u64(other.n[i]);
                 n[i] := u64u32(t & 0xFFFFFFFF);
                 t >>= 32;
             };
@@ -2528,21 +2528,21 @@ module {
 
         public func mul(other: Scalar): Scalar {
             let ret = Scalar();
-            ret.mul_in_place(self(), other);
+            ret.mul_in_place(clone(), other);
             ret
         };
 
         public func mul_assign(other: Scalar) {
-            mul_in_place(self(), other);
+            mul_in_place(clone(), other);
         };
 
         public func neg_mut(): Scalar {
             cond_neg_assign(subtle.into(1));
-            self()
+            clone()
         };
 
         public func neg_unmut(): Scalar {
-            let value = self();
+            let value = clone();
             value.neg_mut()
         };
 
@@ -2553,7 +2553,7 @@ module {
         var c4 = c1;
         var c5 = c2;
 
-        let t = u64(a) * u64(b);
+        let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
         c3 := Nat32.addWrap(c3, tl);
@@ -2569,7 +2569,7 @@ module {
         var c4 = c1;
         var c5 = c2;
 
-        let t = u64(a) * u64(b);
+        let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
         c3 := Nat32.addWrap(c3, tl);
@@ -2584,7 +2584,7 @@ module {
         var c4 = c1;
         var c5 = c2;
 
-        let t = u64(a) * u64(b);
+        let t = u64(a) *% u64(b);
         let th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
         var th2 = Nat32.addWrap(th, th);
