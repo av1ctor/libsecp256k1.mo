@@ -75,7 +75,7 @@ module {
                 az_buf.add(point.z);
             };
         };
-        let az: [var Field] = az_buf.toVarArray();
+        let az: [var Field] = Buffer.toVarArray(az_buf);
         let azi: [var Field] = inv_all_var(az);
 
         let ret = Array.init<Affine>(a.size(), group.Affine());
@@ -107,7 +107,7 @@ module {
             ret_buf.add(field.Field());
             ret_buf.put(i, ret_buf.get(i-1).mul(fields[i]));
         };
-        let ret = ret_buf.toVarArray();
+        let ret = Buffer.toVarArray(ret_buf);
 
         var u = ret[fields.size() - 1].inv_var();
 
