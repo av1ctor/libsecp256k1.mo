@@ -23,7 +23,7 @@ module {
     };
 
     public func u8(a: Nat32): Nat8 {
-        Nat8.fromNat(Nat32.toNat(a))
+        Nat8.fromNat(Nat32.toNat(a & 0xff))
     };
 
     public func u64(a: Nat32): Nat64 {
@@ -32,7 +32,7 @@ module {
 
     // u64 small u32
     public func u64u32(a: Nat64): Nat32 {
-        Nat32.fromNat(Nat64.toNat(a));
+        Nat32.fromNat(Nat64.toNat(a & 0xffffffff));
     };
 
     public func u8u64(a: Nat8): Nat64 {
@@ -40,7 +40,7 @@ module {
     };
 
     public func u64u8(a: Nat64): Nat8 {
-        Nat8.fromNat(Nat64.toNat(a))
+        Nat8.fromNat(Nat64.toNat(a & 0xff))
     };
 
     public func boolu8(b: Bool): Nat8 {
