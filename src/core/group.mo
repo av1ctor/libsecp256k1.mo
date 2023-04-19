@@ -1,10 +1,10 @@
 import Option "mo:base/Option";
 
-import field "./field";
+import Field "field";
 
 module {
-    type Field = field.Field;
-    type FieldStorage = field.FieldStorage;
+    type Field = Field.Field;
+    type FieldStorage = Field.FieldStorage;
 
     public type AffineStatic = {
         x: [Nat32];
@@ -21,8 +21,8 @@ module {
 
     /// A group element of the secp256k1 curve, in affine coordinates.
     public class Affine() {
-        public var x: Field = field.Field();
-        public var y: Field = field.Field();
+        public var x: Field = Field.Field();
+        public var y: Field = Field.Field();
         public var infinity: Bool = false;
 
         public func clone(): Affine {
@@ -54,7 +54,7 @@ module {
             let x2 = _x.sqr();
             let x3 = _x.mul(x2);
             infinity := false;
-            var c = field.Field();
+            var c = Field.Field();
             c.set_int(CURVE_B);
             c := c.add(x3);
             let (v, ret) = c.sqrt();
@@ -90,7 +90,7 @@ module {
             let y2 = y.sqr();
             var x3 = x.sqr();
             x3 := x3.mul(x);
-            let c = field.Field();
+            let c = Field.Field();
             c.set_int(CURVE_B);
             x3 := x3.add(c);
             x3.normalize_weak();
@@ -164,9 +164,9 @@ module {
     };
 
     public class Jacobian() {
-        public var x: Field = field.Field();
-        public var y: Field = field.Field();
-        public var z: Field = field.Field();
+        public var x: Field = Field.Field();
+        public var y: Field = Field.Field();
+        public var z: Field = Field.Field();
         public var infinity: Bool = false;    
 
         public func clone(): Jacobian {
@@ -264,7 +264,7 @@ module {
             };
 
             ignore do? {
-                field.assign(rzr!, a.y);
+                Field.assign(rzr!, a.y);
                 rzr!.normalize_weak();
                 rzr!.mul_int(2);
             };
@@ -368,7 +368,7 @@ module {
         /// Set r equal to the sum of a and b (with b given in affine
         /// coordinates, and not infinity).
         public func add_ge_in_place(a: Jacobian, b: Affine) {
-            let FE1: Field = field.new(0, 0, 0, 0, 0, 0, 0, 1);
+            let FE1: Field = Field.new(0, 0, 0, 0, 0, 0, 0, 1);
 
             assert(not b.infinity);
 
@@ -488,7 +488,7 @@ module {
             let h2 = h.sqr();
             var h3 = h.mul(h2);
             ignore do?{
-                field.assign(rzr!, h);
+                Field.assign(rzr!, h);
             };
             z := a.z.mul(h);
             let t = u1.mul(h2);
@@ -599,8 +599,8 @@ module {
     };
 
     public class AffineStorage() {
-        public var x: FieldStorage = field.FieldStorage();
-        public var y: FieldStorage = field.FieldStorage();
+        public var x: FieldStorage = Field.FieldStorage();
+        public var y: FieldStorage = Field.FieldStorage();
 
         /// If flag is true, set *r equal to *a; otherwise leave
         /// it. Constant-time.
@@ -632,11 +632,14 @@ module {
     public let CURVE_B: Nat32 = 7;
 
     // r will be modified
-    public func set_table_gej_var(r: [Affine], a: [Jacobian], zr: [Field]) {
+    public func set_table_gej_var(
+        r: [Affine], 
+        a: [var Jacobian], 
+        zr: [var Field]) {
         assert(r.size() == a.size());
 
         var i: Nat = r.size() - 1;
-        var zi: Field = field.Field();
+        var zi: Field = Field.Field();
 
         if (r.size() != 0) {
             zi := a[i].z.inv();
@@ -651,16 +654,21 @@ module {
     };
     
     // r, globalz will be modified
-    public func globalz_set_table_gej(r: [Affine], globalz: Field, a: [Jacobian], zr: [Field]) {
+    public func globalz_set_table_gej(
+        r: [var Affine], 
+        globalz: Field, 
+        a: [var Jacobian], 
+        zr: [var Field]
+    ) {
         assert(r.size() == a.size() and a.size() == zr.size());
 
         var i: Nat = r.size() - 1;
-        var zs: Field = field.Field();
+        var zs: Field = Field.Field();
 
         if (r.size() != 0) {
             r[i].x := a[i].x;
             r[i].y := a[i].y;
-            field.assign(globalz, a[i].z);
+            Field.assign(globalz, a[i].z);
             r[i].infinity := false;
             zs := zr[i];
 
@@ -690,7 +698,7 @@ module {
         r.x := x;
         r.y := y;
         r.infinity := false;
-        r.z := field.new(0, 0, 0, 0, 0, 0, 0, 1);
+        r.z := Field.new(0, 0, 0, 0, 0, 0, 0, 1);
         r
     };
 
@@ -721,17 +729,17 @@ module {
 
     public func affineStatic(a: AffineStatic): Affine {
         let ret = Affine();
-        ret.x.assign_mut(field.new(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7]));
-        ret.y.assign_mut(field.new(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7]));
+        ret.x.assign_mut(Field.new(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7]));
+        ret.y.assign_mut(Field.new(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7]));
         ret.infinity := a.infinity;
         ret
     };
 
     public func jacobianStatic(a: JacobianStatic): Jacobian {
         let ret = Jacobian();
-        ret.x.assign_mut(field.new(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7]));
-        ret.y.assign_mut(field.new(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7]));
-        ret.z.assign_mut(field.new(a.z[0], a.z[1], a.z[2], a.z[3], a.z[4], a.z[5], a.z[6], a.z[7]));
+        ret.x.assign_mut(Field.new(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7]));
+        ret.y.assign_mut(Field.new(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7]));
+        ret.z.assign_mut(Field.new(a.z[0], a.z[1], a.z[2], a.z[3], a.z[4], a.z[5], a.z[6], a.z[7]));
         ret.infinity := a.infinity;
         ret
     };

@@ -20,7 +20,7 @@ module {
         /// where p = 2^256 - 0x1000003D1
         ///
         /// The least signifiant byte is in the front.
-        public let n: [var Nat32] = Array.init<Nat32>(10, 0);
+        public var n: [var Nat32] = Array.init<Nat32>(10, 0);
         public var magnitude: Nat32 = 0;
         public var normalized: Bool = true;
 
@@ -54,12 +54,6 @@ module {
             n[9] := a.n[9];
             magnitude := a.magnitude;
             normalized := a.normalized;
-        };
-
-        public func from_int(a: Nat32): Field {
-            let f = Field();
-            f.set_int(a);
-            f
         };
 
         public func verify(): Bool {

@@ -92,20 +92,29 @@ module {
 
         /// Access bits from a scalar. All requested bits must belong to
         /// the same 32-bit limb. can be used in wasm32
-        public func bits_32(offset: Nat32, count: Nat32): Nat32 {
+        public func bits_32(
+            offset: Nat32, 
+            count: Nat32
+        ): Nat32 {
             let index: Nat32 = offset >> 5;
             (n[Nat32.toNat(index)] >> (offset & 0x1F)) & ((1 << count) - 1)
         };
 
         /// Access bits from a scalar. All requested bits must belong to
         /// the same 32-bit limb. can be used in wasm64
-        public func bits_64(offset: Nat64, count: Nat64): Nat32 {
+        public func bits_64(
+            offset: Nat64, 
+            count: Nat64
+        ): Nat32 {
             let index: Nat64 = offset >> 5;
             u64u32((u64(n[Nat64.toNat(index)]) >> (offset & 0x1F)) & ((1 << count) - 1))
         };
 
         /// Access bits from a scalar. Not constant time.
-        public func bits_var(offset: Nat32, count: Nat32): Nat32 {
+        public func bits_var(
+            offset: Nat32, 
+            count: Nat32
+        ): Nat32 {
             assert(count < 32);
             assert(offset +% count <= 256);
             if ((offset +% count - 1) >> 5 == offset >> 5) {
@@ -209,39 +218,39 @@ module {
         };
 
         /// Set a scalar from a big endian byte array, return whether it overflowed.
-        public func set_b32(b32: [Nat8]): Choice {
-            n[0] := u32(b32[31])
-                | (u32(b32[30]) << 8)
-                | (u32(b32[29]) << 16)
-                | (u32(b32[28]) << 24);
-            n[1] := u32(b32[27])
-                | (u32(b32[26]) << 8)
-                | (u32(b32[25]) << 16)
-                | (u32(b32[24]) << 24);
-            n[2] := u32(b32[23])
-                | (u32(b32[22]) << 8)
-                | (u32(b32[21]) << 16)
-                | (u32(b32[20]) << 24);
-            n[3] := u32(b32[19])
-                | (u32(b32[18]) << 8)
-                | (u32(b32[17]) << 16)
-                | (u32(b32[16]) << 24);
-            n[4] := u32(b32[15])
-                | (u32(b32[14]) << 8)
-                | (u32(b32[13]) << 16)
-                | (u32(b32[12]) << 24);
-            n[5] := u32(b32[11])
-                | (u32(b32[10]) << 8)
-                | (u32(b32[9]) << 16)
-                | (u32(b32[8]) << 24);
-            n[6] := u32(b32[7])
-                | (u32(b32[6]) << 8)
-                | (u32(b32[5]) << 16)
-                | (u32(b32[4]) << 24);
-            n[7] := u32(b32[3])
-                | (u32(b32[2]) << 8)
-                | (u32(b32[1]) << 16)
-                | (u32(b32[0]) << 24);
+        public func set_b32(b32: [Nat8], offset: Nat): Choice {
+            n[0] := u32(b32[offset + 31])
+                | (u32(b32[offset + 30]) << 8)
+                | (u32(b32[offset + 29]) << 16)
+                | (u32(b32[offset + 28]) << 24);
+            n[1] := u32(b32[offset + 27])
+                | (u32(b32[offset + 26]) << 8)
+                | (u32(b32[offset + 25]) << 16)
+                | (u32(b32[offset + 24]) << 24);
+            n[2] := u32(b32[offset + 23])
+                | (u32(b32[offset + 22]) << 8)
+                | (u32(b32[offset + 21]) << 16)
+                | (u32(b32[offset + 20]) << 24);
+            n[3] := u32(b32[offset + 19])
+                | (u32(b32[offset + 18]) << 8)
+                | (u32(b32[offset + 17]) << 16)
+                | (u32(b32[offset + 16]) << 24);
+            n[4] := u32(b32[offset + 15])
+                | (u32(b32[offset + 14]) << 8)
+                | (u32(b32[offset + 13]) << 16)
+                | (u32(b32[offset + 12]) << 24);
+            n[5] := u32(b32[offset + 11])
+                | (u32(b32[offset + 10]) << 8)
+                | (u32(b32[offset + 9]) << 16)
+                | (u32(b32[offset + 8]) << 24);
+            n[6] := u32(b32[offset + 7])
+                | (u32(b32[offset + 6]) << 8)
+                | (u32(b32[offset + 5]) << 16)
+                | (u32(b32[offset + 4]) << 24);
+            n[7] := u32(b32[offset + 3])
+                | (u32(b32[offset + 2]) << 8)
+                | (u32(b32[offset + 1]) << 16)
+                | (u32(b32[offset + 0]) << 24);
 
             let overflow = check_overflow();
             reduce(overflow);
@@ -252,44 +261,44 @@ module {
         /// Convert a scalar to a byte array.
         public func b32(): [var Nat8] {
             let bin = Array.init<Nat8>(32, 0);
-            fill_b32(bin);
+            fill_b32(bin, 0);
             bin
         };
 
         /// Convert a scalar to a byte array.
-        public func fill_b32(bin: [var Nat8]) {
-            bin[0] := u8(n[7] >> 24);
-            bin[1] := u8(n[7] >> 16);
-            bin[2] := u8(n[7] >> 8);
-            bin[3] := u8(n[7]);
-            bin[4] := u8(n[6] >> 24);
-            bin[5] := u8(n[6] >> 16);
-            bin[6] := u8(n[6] >> 8);
-            bin[7] := u8(n[6]);
-            bin[8] := u8(n[5] >> 24);
-            bin[9] := u8(n[5] >> 16);
-            bin[10] := u8(n[5] >> 8);
-            bin[11] := u8(n[5]);
-            bin[12] := u8(n[4] >> 24);
-            bin[13] := u8(n[4] >> 16);
-            bin[14] := u8(n[4] >> 8);
-            bin[15] := u8(n[4]);
-            bin[16] := u8(n[3] >> 24);
-            bin[17] := u8(n[3] >> 16);
-            bin[18] := u8(n[3] >> 8);
-            bin[19] := u8(n[3]);
-            bin[20] := u8(n[2] >> 24);
-            bin[21] := u8(n[2] >> 16);
-            bin[22] := u8(n[2] >> 8);
-            bin[23] := u8(n[2]);
-            bin[24] := u8(n[1] >> 24);
-            bin[25] := u8(n[1] >> 16);
-            bin[26] := u8(n[1] >> 8);
-            bin[27] := u8(n[1]);
-            bin[28] := u8(n[0] >> 24);
-            bin[29] := u8(n[0] >> 16);
-            bin[30] := u8(n[0] >> 8);
-            bin[31] := u8(n[0]);
+        public func fill_b32(bin: [var Nat8], offset: Nat) {
+            bin[offset + 0] := u8(n[7] >> 24);
+            bin[offset + 1] := u8(n[7] >> 16);
+            bin[offset + 2] := u8(n[7] >> 8);
+            bin[offset + 3] := u8(n[7]);
+            bin[offset + 4] := u8(n[6] >> 24);
+            bin[offset + 5] := u8(n[6] >> 16);
+            bin[offset + 6] := u8(n[6] >> 8);
+            bin[offset + 7] := u8(n[6]);
+            bin[offset + 8] := u8(n[5] >> 24);
+            bin[offset + 9] := u8(n[5] >> 16);
+            bin[offset + 10] := u8(n[5] >> 8);
+            bin[offset + 11] := u8(n[5]);
+            bin[offset + 12] := u8(n[4] >> 24);
+            bin[offset + 13] := u8(n[4] >> 16);
+            bin[offset + 14] := u8(n[4] >> 8);
+            bin[offset + 15] := u8(n[4]);
+            bin[offset + 16] := u8(n[3] >> 24);
+            bin[offset + 17] := u8(n[3] >> 16);
+            bin[offset + 18] := u8(n[3] >> 8);
+            bin[offset + 19] := u8(n[3]);
+            bin[offset + 20] := u8(n[2] >> 24);
+            bin[offset + 21] := u8(n[2] >> 16);
+            bin[offset + 22] := u8(n[2] >> 8);
+            bin[offset + 23] := u8(n[2]);
+            bin[offset + 24] := u8(n[1] >> 24);
+            bin[offset + 25] := u8(n[1] >> 16);
+            bin[offset + 26] := u8(n[1] >> 8);
+            bin[offset + 27] := u8(n[1]);
+            bin[offset + 28] := u8(n[0] >> 24);
+            bin[offset + 29] := u8(n[0] >> 16);
+            bin[offset + 30] := u8(n[0] >> 8);
+            bin[offset + 31] := u8(n[0]);
         };
 
         /// Check whether a scalar equals zero.
@@ -2508,6 +2517,12 @@ module {
             assign_mut(t.mul(x6));
         };
 
+        public func inv(): Scalar {
+            let ret = Scalar();
+            ret.inv_in_place(clone());
+            ret
+        };
+
         public func add(other: Scalar): Scalar {
             add_assign(other);
             clone()
@@ -2536,14 +2551,14 @@ module {
             mul_in_place(clone(), other);
         };
 
-        public func neg_mut(): Scalar {
+        public func neg_mut() {
             cond_neg_assign(subtle.into(1));
-            clone()
         };
 
         public func neg_unmut(): Scalar {
             let value = clone();
-            value.neg_mut()
+            value.neg_mut();
+            value
         };
 
     };

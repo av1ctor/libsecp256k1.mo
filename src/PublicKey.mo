@@ -1,16 +1,17 @@
-import Utils "./core/utils";
+import Array "mo:base/Array";
+import E "mo:base/Error";
 import Result "mo:base/Result";
+import Utils "core/utils";
 import Field "core/field";
 import Error "core/error";
-import E "mo:base/Error";
-import Scalar "core/scalar";
 import Group "core/group";
-import Array "mo:base/Array";
 
-module PublicKey {
+module {
     public class PublicKey(
-        affine: Group.Affine
+        affine_: Group.Affine
     ) {
+        public let affine = affine_;
+        
         public func serialize(
         ): [Nat8] {
             let ret = Array.init<Nat8>(65, 0);
