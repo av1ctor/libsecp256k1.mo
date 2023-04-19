@@ -1,5 +1,4 @@
 import Option "mo:base/Option";
-
 import Field "field";
 
 module {
@@ -254,19 +253,28 @@ module {
 
         /// Set r equal to the double of a. If rzr is not-NULL, r->z =
         /// a->z * *rzr (where infinity means an implicit z = 0).
-        public func double_var_in_place(a: Jacobian, rzr: ?Field) {
+        public func double_var_in_place(
+            a: Jacobian, 
+            rzr: ?Field
+        ) {
             infinity := a.infinity;
-            if infinity {
-                ignore do? {
-                    rzr!.set_int(1);
-                };                
+            if(infinity) {
+                switch(rzr) {
+                    case null {};
+                    case (?rzr) {
+                        rzr.set_int(1);
+                    };
+                };
                 return;
             };
 
-            ignore do? {
-                Field.assign(rzr!, a.y);
-                rzr!.normalize_weak();
-                rzr!.mul_int(2);
+            switch(rzr) {
+                case null {};
+                case (?rzr) {
+                    Field.assign(rzr, a.y);
+                    rzr.normalize_weak();
+                    rzr.mul_int(2);
+                };
             };
 
             z := a.z.mul(a.y);
@@ -279,19 +287,21 @@ module {
             let t4 = t3.sqr();
             t4.mul_int(2);
             t3 := t3.mul(a.x);
-            x := t3;
+            x := t3.clone();
             x.mul_int(4);
             x := x.neg(4);
-            x := x.add(t2);
+            x.add_assign(t2);
             t2 := t2.neg(1);
             t3.mul_int(6);
-            t3 := t3.add(t2);
+            t3.add_assign(t2);
             y := t1.mul(t3);
             t2 := t4.neg(2);
-            y := y.add(t2);
+            y.add_assign(t2);
         };
 
-        public func double_var(rzr: ?Field): Jacobian {
+        public func double_var(
+            rzr: ?Field
+        ): Jacobian {
             let ret = Jacobian();
             ret.double_var_in_place(clone(), rzr);
             ret
@@ -306,8 +316,11 @@ module {
                 return;
             };
             if (b.is_infinity()) {
-                ignore do? {
-                    rzr!.set_int(1);
+                switch(rzr) {
+                    case null {};
+                    case (?rzr) {
+                        rzr.set_int(1);
+                    };
                 };
                 assign_mut(a);
                 return;
@@ -319,19 +332,22 @@ module {
             let u1 = a.x.mul(z22);
             let u2 = b.x.mul(z12);
             var s1 = a.y.mul(z22);
-            s1 := s1.mul(b.z);
+            s1.mul_assign(b.z);
             var s2 = b.y.mul(z12);
-            s2 := s2.mul(a.z);
+            s2.mul_assign(a.z);
             var h = u1.neg(1);
-            h := h.add(u2);
+            h.add_assign(u2);
             var i = s1.neg(1);
-            i := i.add(s2);
+            i.add_assign(s2);
             if (h.normalizes_to_zero_var()) {
                 if (i.normalizes_to_zero_var()) {
                     double_var_in_place(a, rzr);
                 } else {
-                    ignore do? {
-                        rzr!.set_int(0);
+                    switch(rzr) {
+                        case null {};
+                        case (?rzr) {
+                            rzr.set_int(0);
+                        };
                     };
                     infinity := true;
                 };
@@ -340,23 +356,26 @@ module {
             let i2 = i.sqr();
             let h2 = h.sqr();
             var h3 = h.add(h2);
-            h := h.mul(b.z);
-            ignore do? {
-                rzr!.assign_mut(h);
+            h.mul_assign(b.z);
+            switch(rzr) {
+                case null {};
+                case (?rzr) {
+                    rzr.assign_mut(h);
+                };
             };
             z := a.z.mul(h);
             let t = u1.mul(h2);
-            x := t;
+            x := t.clone();
             x.mul_int(2);
-            x := x.add(h3);
+            x.add_assign(h3);
             x := x.neg(3);
-            x := x.add(i2);
+            x.add_assign(i2);
             y := x.neg(5);
-            y := y.add(t);
-            y := y.mul(i);
-            h3 := h3.mul(s1);
+            y.add_assign(t);
+            y.mul_assign(i);
+            h3.mul_assign(s1);
             h3 := h3.neg(1);
-            y := y.add(h3);
+            y.add_assign(h3);
         };
 
         public func add_var(b: Jacobian, rzr: ?Field): Jacobian {
@@ -373,25 +392,25 @@ module {
             assert(not b.infinity);
 
             let zz = a.z.sqr();
-            let u1 = a.x;
+            let u1 = a.x.clone();
             u1.normalize_weak();
             let u2 = b.x.mul(zz);
-            let s1 = a.y;
+            let s1 = a.y.clone();
             s1.normalize_weak();
             var s2 = b.y.mul(zz);
             s2 := s2.mul(a.z);
-            var t = u1;
-            t := t.add(u2);
-            var m = s1;
-            m := m.add(s2);
+            var t = u1.clone();
+            t.add_assign(u2);
+            var m = s1.clone();
+            m.add_assign(s2);
             var rr = t.sqr();
             var m_alt = u2.neg(1);
             let tt = u1.mul(m_alt);
-            rr := rr.add(tt);
+            rr.add_assign(tt);
             let degenerate = m.normalizes_to_zero() and rr.normalizes_to_zero();
-            let rr_alt = s1;
+            let rr_alt = s1.clone();
             rr_alt.mul_int(2);
-            m_alt := m_alt.add(u1);
+            m_alt.add_assign(u1);
 
             rr_alt.cmov(rr, not degenerate);
             m_alt.cmov(m, not degenerate);
@@ -416,13 +435,13 @@ module {
             };
             z.mul_int(2);
             q := q.neg(1);
-            t := t.add(q);
+            t.add_assign(q);
             t.normalize_weak();
-            x := t;
+            x := t.clone();
             t.mul_int(2);
-            t := t.add(q);
-            t := t.mul(rr_alt);
-            t := t.add(n);
+            t.add_assign(q);
+            t.mul_assign(rr_alt);
+            t.add_assign(n);
             y := t.neg(3);
             y.normalize_weak();
             x.mul_int(4);
@@ -462,17 +481,17 @@ module {
             infinity := false;
 
             let z12 = a.z.sqr();
-            let u1 = a.x;
+            let u1 = a.x.clone();
             u1.normalize_weak();
             let u2 = b.x.mul(z12);
-            let s1 = a.y;
+            let s1 = a.y.clone();
             s1.normalize_weak();
             var s2 = b.y.mul(z12);
-            s2 := s2.mul(a.z);
+            s2.mul_assign(a.z);
             var h = u1.neg(1);
-            h := h.add(u2);
+            h.add_assign(u2);
             var i = s1.neg(1);
-            i := i.add(s2);
+            i.add_assign(s2);
             if (h.normalizes_to_zero_var()) {
                 if (i.normalizes_to_zero_var()) {
                     double_var_in_place(a, rzr);
@@ -492,17 +511,17 @@ module {
             };
             z := a.z.mul(h);
             let t = u1.mul(h2);
-            x := t;
+            x := t.clone();
             x.mul_int(2);
-            x := x.add(h3);
+            x.add_assign(h3);
             x := x.neg(3);
-            x := x.add(i2);
+            x.add_assign(i2);
             y := x.neg(5);
-            y := y.add(t);
-            y := y.mul(i);
-            h3 := h3.mul(s1);
+            y.add_assign(t);
+            y.mul_assign(i);
+            h3.mul_assign(s1);
             h3 := h3.neg(1);
-            y := y.add(h3);
+            y.add_assign(h3);
         };
 
         public func add_ge_var(b: Affine, rzr: ?Field): Jacobian {
@@ -532,10 +551,10 @@ module {
 
             let az = a.z.mul(bzinv);
             let z12 = az.sqr();
-            let u1 = a.x;
+            let u1 = a.x.clone();
             u1.normalize_weak();
             let u2 = b.x.mul(z12);
-            let s1 = a.y;
+            let s1 = a.y.clone();
             s1.normalize_weak();
             var s2 = b.y.mul(z12);
             s2 := s2.mul(az);
@@ -554,20 +573,20 @@ module {
             let i2 = i.sqr();
             let h2 = h.sqr();
             var h3 = h.mul(h2);
-            z := a.z;
-            z := z.mul(h);
+            z := a.z.clone();
+            z.mul_assign(h);
             let t = u1.mul(h2);
-            x := t;
+            x := t.clone();
             x.mul_int(2);
-            x := x.add(h3);
+            x.add_assign(h3);
             x := x.neg(3);
-            x := x.add(i2);
+            x.add_assign(i2);
             y := x.neg(5);
-            y := y.add(t);
-            y := y.mul(i);
-            h3 := h3.mul(s1);
+            y.add_assign(t);
+            y.mul_assign(i);
+            h3.mul_assign(s1);
             h3 := h3.neg(1);
-            y := y.add(h3);
+            y.add_assign(h3);
         };
 
         public func add_zinv_var(b: Affine, bzinv: Field): Jacobian {
@@ -590,10 +609,10 @@ module {
         public func rescale(s: Field) {
             assert(not s.is_zero());
             let zz = s.sqr();
-            x := x.mul(zz);
-            y := y.mul(zz);
-            y := y.mul(s);
-            z := z.mul(s);
+            x.mul_assign(zz);
+            y.mul_assign(zz);
+            y.mul_assign(s);
+            z.mul_assign(s);
         };
 
     };
@@ -633,7 +652,7 @@ module {
 
     // r will be modified
     public func set_table_gej_var(
-        r: [Affine], 
+        r: [var Affine], 
         a: [var Jacobian], 
         zr: [var Field]) {
         assert(r.size() == a.size());
@@ -675,7 +694,7 @@ module {
             while (i > 0) {
                 let temp: Nat = r.size() - 1;
                 if (i != temp) {
-                    zs := zs.mul(zr[i]);
+                    zs.mul_assign(zr[i]);
                 };
                 i -= 1;
                 r[i].set_gej_zinv(a[i], zs);

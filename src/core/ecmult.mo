@@ -26,22 +26,6 @@ module {
     public let ECMULT_TABLE_SIZE_G: Nat = 16384; // 1 << (WINDOW_G - 2);
     public let WNAF_BITS: Nat = 256;
 
-    func odd_multiples_table_storage_var(
-        pre: [var AffineStorage], 
-        a: Jacobian
-    ) {
-        let prej = Array.init<Jacobian>(pre.size(), Group.Jacobian());
-        let prea = Array.freeze<Affine>(Array.init<Affine>(pre.size(), Group.Affine()));
-        let zr = Array.init<Field>(pre.size(), Field.Field());
-
-        odd_multiples_table(prej, zr, a);
-        Group.set_table_gej_var(prea, prej, zr);
-
-        for (i in Iter.range(0, pre.size()-1)) {
-            pre[i] := Group.into_as(prea[i]);
-        };
-    };
-
     /// Context for accelerating the computation of a*P + b*G.
     public class ECMultContext() {
         public let pre_g = Array.init<AffineStorage>(ECMULT_TABLE_SIZE_G, Group.AffineStorage());
@@ -288,7 +272,11 @@ module {
         };
     };
 
-    public func odd_multiples_table(prej: [var Jacobian], zr: [var Field], a: Jacobian) {
+    public func odd_multiples_table(
+        prej: [var Jacobian], 
+        zr: [var Field], 
+        a: Jacobian
+    ) {
         let len = prej.size();
         assert(prej.size() == zr.size());
         assert(not (len == 0));
@@ -311,5 +299,21 @@ module {
 
         let l = prej[len-1].z.mul(d.z);
         prej[len-1].z := l;
+    };
+
+    func odd_multiples_table_storage_var(
+        pre: [var AffineStorage], 
+        a: Jacobian
+    ) {
+        let prej = Array.init<Jacobian>(pre.size(), Group.Jacobian());
+        let prea = Array.init<Affine>(pre.size(), Group.Affine());
+        let zr = Array.init<Field>(pre.size(), Field.Field());
+
+        odd_multiples_table(prej, zr, a);
+        Group.set_table_gej_var(prea, prej, zr);
+
+        for (i in Iter.range(0, pre.size()-1)) {
+            pre[i] := Group.into_as(prea[i]);
+        };
     };
 };

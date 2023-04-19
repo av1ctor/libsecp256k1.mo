@@ -408,41 +408,27 @@ module {
         /// optionally normalize the input, but this should not be relied
         /// upon.
         public func normalizes_to_zero_var(): Bool {
-            var t0: Nat32 = 0;
-            var t1: Nat32 = 0;
-            var t2: Nat32 = 0;
-            var t3: Nat32 = 0;
-            var t4: Nat32 = 0;
-            var t5: Nat32 = 0;
-            var t6: Nat32 = 0;
-            var t7: Nat32 = 0;
-            var t8: Nat32 = 0;
-            var t9: Nat32 = 0;
-            var z0: Nat32 = 0;
-            var z1: Nat32 = 0;
-            var x: Nat32 = 0;
+            var t0 = n[0];
+            var t9 = n[9];
 
-            t0 := n[0];
-            t9 := n[9];
-
-            x := t9 >> 22;
+            var x = t9 >> 22;
             t0 +%= x *% 0x3d1;
 
-            z0 := t0 & 0x3ffffff;
-            z1 := z0 ^ 0x3d0;
+            var z0 = t0 & 0x3ffffff;
+            var z1 = z0 ^ 0x3d0;
 
             if ((z0 != 0) and (z1 != 0x3ffffff)) {
                 return false;
             };
 
-            t1 := n[1];
-            t2 := n[2];
-            t3 := n[3];
-            t4 := n[4];
-            t5 := n[5];
-            t6 := n[6];
-            t7 := n[7];
-            t8 := n[8];
+            var t1 = n[1];
+            var t2 = n[2];
+            var t3 = n[3];
+            var t4 = n[4];
+            var t5 = n[5];
+            var t6 = n[6];
+            var t7 = n[7];
+            var t8 = n[8];
 
             t9 &= 0x03fffff;
             t1 +%= x << 6;
@@ -657,16 +643,18 @@ module {
             assert(other.magnitude <= m);
             assert(other.verify());
 
-            n[0] := 0x3fffc2f *% 2 *% (m +% 1) -% other.n[0];
-            n[1] := 0x3ffffbf *% 2 *% (m +% 1) -% other.n[1];
-            n[2] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[2];
-            n[3] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[3];
-            n[4] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[4];
-            n[5] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[5];
-            n[6] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[6];
-            n[7] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[7];
-            n[8] := 0x3ffffff *% 2 *% (m +% 1) -% other.n[8];
-            n[9] := 0x03fffff *% 2 *% (m +% 1) -% other.n[9];
+            let mp1t2 = 2 *% (m +% 1);
+
+            n[0] := 0x3fffc2f *% mp1t2 -% other.n[0];
+            n[1] := 0x3ffffbf *% mp1t2 -% other.n[1];
+            n[2] := 0x3ffffff *% mp1t2 -% other.n[2];
+            n[3] := 0x3ffffff *% mp1t2 -% other.n[3];
+            n[4] := 0x3ffffff *% mp1t2 -% other.n[4];
+            n[5] := 0x3ffffff *% mp1t2 -% other.n[5];
+            n[6] := 0x3ffffff *% mp1t2 -% other.n[6];
+            n[7] := 0x3ffffff *% mp1t2 -% other.n[7];
+            n[8] := 0x3ffffff *% mp1t2 -% other.n[8];
+            n[9] := 0x03fffff *% mp1t2 -% other.n[9];
 
             magnitude := m + 1;
             normalized := false;
@@ -1331,29 +1319,8 @@ module {
             let R0: Nat64 = 0x3d10;
             let R1: Nat64 = 0x400;
 
-
             var c: Nat64 = 0;
             var d: Nat64 = 0;
-            
-            var v0: Nat64 = 0;
-            var v1: Nat64 = 0;
-            var v2: Nat64 = 0;
-            var v3: Nat64 = 0;
-            var v4: Nat64 = 0;
-            var v5: Nat64 = 0;
-            var v6: Nat64 = 0;
-            var v7: Nat64 = 0;
-            var v8: Nat64 = 0;
-
-            var t9: Nat32 = 0;
-            var t0: Nat32 = 0;
-            var t1: Nat32 = 0;
-            var t2: Nat32 = 0;
-            var t3: Nat32 = 0;
-            var t4: Nat32 = 0;
-            var t5: Nat32 = 0;
-            var t6: Nat32 = 0;
-            var t7: Nat32 = 0;
 
             assert(a.n[0] >> 30 == 0);
             assert(a.n[1] >> 30 == 0);
@@ -1386,7 +1353,7 @@ module {
                 );
             // assert(d >> 64 == 0);
             /* [d 0 0 0 0 0 0 0 0 0] = [p9 0 0 0 0 0 0 0 0 0] */
-            t9 := u64u32(d & M);
+            let t9 = u64u32(d & M);
             d >>= 26;
             assert(t9 >> 26 == 0);
             assert(d >> 38 == 0);
@@ -1414,14 +1381,14 @@ module {
 
             assert(d >> 63 == 0);
             /* [d t9 0 0 0 0 0 0 0 0 c] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
-            v0 := d & M;
+            let v0 = d & M;
             d >>= 26;
             c +%= v0 *% R0;
             assert(v0 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 61 == 0);
             /* [d u0 t9 0 0 0 0 0 0 0 0 c-u0*R0] = [p10 p9 0 0 0 0 0 0 0 0 p0] */
-            t0 := u64u32(c & M);
+            let t0 = u64u32(c & M);
             c >>= 26;
             c +%= v0 *% R1;
             assert(t0 >> 26 == 0);
@@ -1452,14 +1419,14 @@ module {
             
             assert(d >> 63 == 0);
             /* [d 0 t9 0 0 0 0 0 0 0 c t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
-            v1 := d & M;
+            let v1 = d & M;
             d >>= 26;
             c +%= v1 *% R0;
             assert(v1 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u1 0 t9 0 0 0 0 0 0 0 c-u1*R0 t0] = [p11 p10 p9 0 0 0 0 0 0 0 p1 p0] */
-            t1 := u64u32(c & M);
+            let t1 = u64u32(c & M);
             c >>= 26;
             c +%= v1 *% R1;
             assert(t1 >> 26 == 0);
@@ -1492,14 +1459,14 @@ module {
                 );
             assert(d >> 63 == 0);
             /* [d 0 0 t9 0 0 0 0 0 0 c t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
-            v2 := d & M;
+            let v2 = d & M;
             d >>= 26;
             c +%= v2 *% R0;
             assert(v2 >> 26 == 0);
             assert(d >> 37 == 0);
             assert(c >> 63 == 0);
             /* [d u2 0 0 t9 0 0 0 0 0 0 c-u2*R0 t1 t0] = [p12 p11 p10 p9 0 0 0 0 0 0 p2 p1 p0] */
-            t2 := u64u32(c & M);
+            let t2 = u64u32(c & M);
             c >>= 26;
             c +%= v2 *% R1;
             assert(t2 >> 26 == 0);
@@ -1528,14 +1495,14 @@ module {
                 );
             assert(d >> 63 == 0);
             /* [d 0 0 0 t9 0 0 0 0 0 c t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
-            v3 := d & M;
+            let v3 = d & M;
             d >>= 26;
             c +%= v3 *% R0;
             assert(v3 >> 26 == 0);
             assert(d >> 37 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u3 0 0 0 t9 0 0 0 0 0 c-u3*R0 t2 t1 t0] = [p13 p12 p11 p10 p9 0 0 0 0 0 p3 p2 p1 p0] */
-            t3 := u64u32(c & M);
+            let t3 = u64u32(c & M);
             c >>= 26;
             c +%= v3 *% R1;
             assert(t3 >> 26 == 0);
@@ -1567,14 +1534,14 @@ module {
                 );          
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 t9 0 0 0 0 c t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
-            v4 := d & M;
+            let v4 = d & M;
             d >>= 26;
             c +%= v4 *% R0;
             assert(v4 >> 26 == 0);
             assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u4 0 0 0 0 t9 0 0 0 0 c-u4*R0 t3 t2 t1 t0] = [p14 p13 p12 p11 p10 p9 0 0 0 0 p4 p3 p2 p1 p0] */
-            t4 := u64u32(c & M);
+            let t4 = u64u32(c & M);
             c >>= 26;
             c +%= v4 *% R1;
             assert(t4 >> 26 == 0);
@@ -1603,14 +1570,14 @@ module {
                 );  
             assert(d >> 62 == 0);
             /* [d 0 0 0 0 0 t9 0 0 0 c t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
-            v5 := d & M;
+            let v5 = d & M;
             d >>= 26;
             c +%= v5 *% R0;
             assert(v5 >> 26 == 0);
             assert(d >> 36 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u5 0 0 0 0 0 t9 0 0 0 c-u5*R0 t4 t3 t2 t1 t0] = [p15 p14 p13 p12 p11 p10 p9 0 0 0 p5 p4 p3 p2 p1 p0] */
-            t5 := u64u32(c & M);
+            let t5 = u64u32(c & M);
             c >>= 26;
             c +%= v5 *% R1;
             assert(t5 >> 26 == 0);
@@ -1642,14 +1609,14 @@ module {
                 );
             assert(d >> 61 == 0);
             /* [d 0 0 0 0 0 0 t9 0 0 c t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
-            v6 := d & M;
+            let v6 = d & M;
             d >>= 26;
             c +%= v6 *% R0;
             assert(v6 >> 26 == 0);
             assert(d >> 35 == 0);
             // debug_assert_bits!(c, 64);
             /* [d u6 0 0 0 0 0 0 t9 0 0 c-u6*R0 t5 t4 t3 t2 t1 t0] = [p16 p15 p14 p13 p12 p11 p10 p9 0 0 p6 p5 p4 p3 p2 p1 p0] */
-            t6 := u64u32(c & M);
+            let t6 = u64u32(c & M);
             c >>= 26;
             c +%= v6 *% R1;
             assert(t6 >> 26 == 0);
@@ -1677,7 +1644,7 @@ module {
             d := wrapping_add(d, u64(a.n[8] *% 2) *% u64(a.n[9]));
             assert(d >> 58 == 0);
             /* [d 0 0 0 0 0 0 0 t9 0 c t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
-            v7 := d & M;
+            let v7 = d & M;
             d >>= 26;
             c +%= v7 *% R0;
             assert(v7 >> 26 == 0);
@@ -1685,7 +1652,7 @@ module {
             /* debug_assert_bits!(c, 64); */
             assert(c <= 0x800001703FFFC2F7);
             /* [d u7 0 0 0 0 0 0 0 t9 0 c-u7*R0 t6 t5 t4 t3 t2 t1 t0] = [p17 p16 p15 p14 p13 p12 p11 p10 p9 0 p7 p6 p5 p4 p3 p2 p1 p0] */
-            t7 := u64u32(c & M);
+            let t7 = u64u32(c & M);
             c >>= 26;
             c +%= v7 *% R1;
             assert(t7 >> 26 == 0);
@@ -1715,7 +1682,7 @@ module {
             d := wrapping_add(d, u64(a.n[9]) *% u64(a.n[9]));
             assert(d >> 57 == 0);
             /* [d 0 0 0 0 0 0 0 0 t9 c t7 t6 t5 t4 t3 t2 t1 t0] = [p18 p17 p16 p15 p14 p13 p12 p11 p10 p9 p8 p7 p6 p5 p4 p3 p2 p1 p0] */
-            v8 := d & M;
+            let v8 = d & M;
             d >>= 26;
             c +%= v8 *% R0;
             assert(v8 >> 26 == 0);

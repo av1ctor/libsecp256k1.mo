@@ -2571,10 +2571,10 @@ module {
         let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
-        c3 := Nat32.addWrap(c3, tl);
-        th := Nat32.addWrap(th, Utils.boolu32(c3 < tl));
-        c4 := Nat32.addWrap(c4, th);
-        c5 := Nat32.addWrap(c5, Utils.boolu32(c4 < th));
+        c3 +%= tl;
+        th +%= Utils.boolu32(c3 < tl);
+        c4 +%= th;
+        c5 +%= Utils.boolu32(c4 < th);
         assert(c4 >= th or c5 != 0);
         (c3, c4, c5)
     };
@@ -2587,9 +2587,9 @@ module {
         let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
-        c3 := Nat32.addWrap(c3, tl);
-        th := Nat32.addWrap(th, Utils.boolu32(c3 < tl));
-        c4 := Nat32.addWrap(c4, th);
+        c3 +%= tl;
+        th +%= Utils.boolu32(c3 < tl);
+        c4 +%= th;
         assert(c4 >= th);
         (c3, c4, c5)
     };
@@ -2602,18 +2602,18 @@ module {
         let t = u64(a) *% u64(b);
         let th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
-        var th2 = Nat32.addWrap(th, th);
-        c5 := Nat32.addWrap(c5, Utils.boolu32(th2 < th));
+        var th2 = th +% th;
+        c5 +%= Utils.boolu32(th2 < th);
         assert(th2 >= th or c5 != 0);
-        let tl2 = Nat32.addWrap(tl, tl);
-        th2 := Nat32.addWrap(th2, Utils.boolu32(tl2 < tl));
-        c3 := Nat32.addWrap(c3, tl2);
-        th2 := Nat32.addWrap(th2, Utils.boolu32(c3 < tl2));
-        c5 := Nat32.addWrap(c5, Utils.boolu32(c3 < tl2 and th2 == 0 ));
+        let tl2 = tl +% tl;
+        th2 +%= Utils.boolu32(tl2 < tl);
+        c3 +%= tl2;
+        th2 +%= Utils.boolu32(c3 < tl2);
+        c5 +%= Utils.boolu32(c3 < tl2 and th2 == 0 );
         assert(c3 >= tl2 or th2 != 0 or c5 != 0);
 
-        c4 := Nat32.addWrap(c4, th2);
-        c5 := Nat32.addWrap(c5, Utils.boolu32(c4 < th2));
+        c4 +%= th2;
+        c5 +%= Utils.boolu32(c4 < th2);
         assert(c4 >= th2 or c5 != 0);
         (c3, c4, c5)
     };
@@ -2624,10 +2624,10 @@ module {
         var c4 = c1;
         var c5 = c2;
 
-        c3 := Nat32.addWrap(c3, a);
+        c3 +%= a;
         let over = Utils.boolu32(c3 < a);
-        c4 := Nat32.addWrap(c4, over);
-        c5 := Nat32.addWrap(c5, Utils.boolu32(c4 < over));
+        c4 +%= over;
+        c5 +%= Utils.boolu32(c4 < over);
         (c3, c4, c5)
     };
 
@@ -2636,8 +2636,8 @@ module {
         var c4 = c1;
         var c5 = c2;
 
-        c3 := Nat32.addWrap(c3, a);
-        c4 := Nat32.addWrap(c4, Utils.boolu32(c3 < a));
+        c3 +%= a;
+        c4 +%= Utils.boolu32(c3 < a);
         assert(c4 != 0 or c3 >= a);
         assert(c5 == 0);
         (c3, c4, c5)
