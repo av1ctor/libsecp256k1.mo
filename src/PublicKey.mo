@@ -14,7 +14,7 @@ module {
         
         public func serialize(
         ): [Nat8] {
-            let ret = Array.init<Nat8>(65, 0);
+            let ret = Array.tabulateVar<Nat8>(65, func i = 0);
             let elem = affine.clone();
 
             elem.x.normalize_var();
@@ -28,7 +28,7 @@ module {
 
         public func serialize_compressed(
         ): [Nat8] {
-            let ret = Array.init<Nat8>(33, 0);
+            let ret = Array.tabulateVar<Nat8>(33, func i = 0);
             let elem = affine.clone();
 
             elem.x.normalize_var();

@@ -39,7 +39,7 @@ module {
 
     /// A 256-bit scalar value.
     public class Scalar() {
-        public let n: [var Nat32] = Array.init<Nat32>(8, 0);
+        public let n: [var Nat32] = Array.tabulateVar<Nat32>(8, func i = 0);
 
         public func clone(): Scalar {
             let ret = Scalar();
@@ -92,22 +92,13 @@ module {
 
         /// Access bits from a scalar. All requested bits must belong to
         /// the same 32-bit limb. can be used in wasm32
-        public func bits_32(
+        public func bits(
             offset: Nat32, 
             count: Nat32
         ): Nat32 {
+            assert((offset +% count -% 1) >> 5 == offset >> 5);
             let index: Nat32 = offset >> 5;
             (n[Nat32.toNat(index)] >> (offset & 0x1F)) & ((1 << count) - 1)
-        };
-
-        /// Access bits from a scalar. All requested bits must belong to
-        /// the same 32-bit limb. can be used in wasm64
-        public func bits_64(
-            offset: Nat64, 
-            count: Nat64
-        ): Nat32 {
-            let index: Nat64 = offset >> 5;
-            u64u32((u64(n[Nat64.toNat(index)]) >> (offset & 0x1F)) & ((1 << count) - 1))
         };
 
         /// Access bits from a scalar. Not constant time.
@@ -117,13 +108,13 @@ module {
         ): Nat32 {
             assert(count < 32);
             assert(offset +% count <= 256);
-            if ((offset +% count - 1) >> 5 == offset >> 5) {
-                bits_32(offset, count)
+            if ((offset +% count -% 1) >> 5 == offset >> 5) {
+                bits(offset, count)
             } else {
                 assert((offset >> 5) +% 1 < 8);
                 ((n[Nat32.toNat(offset >> 5)] >> (offset & 0x1f))
-                    | (n[Nat32.toNat((offset >> 5) +% 1)] << (32 - (offset & 0x1f))))
-                    & ((1 << count) - 1)
+                    | (n[Nat32.toNat((offset >> 5) +% 1)] << (32 -% (offset & 0x1f))))
+                    & ((1 << count) -% 1)
             };
         };
 
@@ -260,7 +251,7 @@ module {
 
         /// Convert a scalar to a byte array.
         public func b32(): [var Nat8] {
-            let bin = Array.init<Nat8>(32, 0);
+            let bin = Array.tabulateVar<Nat8>(32, func i = 0);
             fill_b32(bin, 0);
             bin
         };
@@ -2338,7 +2329,7 @@ module {
         };
 
         public func mul_in_place(a: Scalar, b: Scalar) {
-            let l = Array.init<Nat32>(16, 0);
+            let l = Array.tabulateVar<Nat32>(16, func i = 0);
             a.mul_512(b, l);
             reduce_512(Array.freeze<Nat32>(l));
         };
@@ -2360,7 +2351,7 @@ module {
         };
 
         public func sqr_in_place(a: Scalar) {
-            let l = Array.init<Nat32>(16, 0);
+            let l = Array.tabulateVar<Nat32>(16, func i = 0);
             a.sqr_512(l);
             reduce_512(Array.freeze<Nat32>(l));
         };

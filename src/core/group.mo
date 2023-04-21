@@ -26,8 +26,8 @@ module {
 
         public func clone(): Affine {
             let ret = Affine();
-            ret.x := x;
-            ret.y := y;
+            ret.x := x.clone();
+            ret.y := y.clone();
             ret.infinity := infinity;
             ret
         };
@@ -39,8 +39,8 @@ module {
         // todo: maybe pointer changed later.
         public func set_xy(_x: Field, _y: Field) {
             infinity := false;
-            x := _x;
-            y := _y;
+            x := _x.clone();
+            y := _y.clone();
         };
 
         /// Set a group element (affine) equal to the point with the given
@@ -49,7 +49,7 @@ module {
         /// given X coordinate exists.
         // todo: maybe pointer changed later.
         public func set_xquad(_x: Field): Bool {
-            x := _x;
+            x := _x.clone();
             let x2 = _x.sqr();
             let x3 = _x.mul(x2);
             infinity := false;
@@ -65,8 +65,8 @@ module {
         /// X coordinate, and given oddness for Y. Return value indicates
         /// whether the result is valid.
         // todo: maybe pointer changed later.
-        public func set_xo_var(x: Field, odd: Bool): Bool {
-            if (not set_xquad(x)) {
+        public func set_xo_var(_x: Field, odd: Bool): Bool {
+            if (not set_xquad(_x)) {
                 return false;
             };
             y.normalize_var();
@@ -97,8 +97,8 @@ module {
         };
 
         public func neg_in_place(other: Affine) {
-            x := other.x;
-            y := other.y;
+            x := other.x.clone();
+            y := other.y.clone();
             infinity := other.infinity;
 
             y.normalize_weak();
@@ -113,7 +113,8 @@ module {
 
         /// Set a group element equal to another which is given in
         /// jacobian coordinates.
-        public func set_gej(a: Jacobian) {
+        public func set_gej(_a: Jacobian) {
+            let a = _a.clone();
             infinity := a.infinity;
             a.z := a.z.inv();
             let z2 = a.z.sqr();
@@ -131,7 +132,8 @@ module {
             ge
         };
 
-        public func set_gej_var(a: Jacobian) {
+        public func set_gej_var(_a: Jacobian) {
+            let a = _a.clone();
             infinity := a.infinity;
             if (a.is_infinity()) {
                 return;
@@ -170,17 +172,17 @@ module {
 
         public func clone(): Jacobian {
             let ret = Jacobian();
-            ret.x := x;
-            ret.y := y;
-            ret.z := z;
+            ret.x := x.clone();
+            ret.y := y.clone();
+            ret.z := z.clone();
             ret.infinity := infinity;
             ret
         };
 
         public func assign_mut(a: Jacobian) {
-            x := a.x;
-            y := a.y;
-            z := a.z;
+            x := a.x.clone();
+            y := a.y.clone();
+            z := a.z.clone();
             infinity := a.infinity;
         };
 
@@ -196,17 +198,17 @@ module {
         /// in affine coordinates.
         public func set_ge(a: Affine) {
             infinity := a.infinity;
-            x := a.x;
-            y := a.y;
+            x := a.x.clone();
+            y := a.y.clone();
             z.set_int(1);
         };
 
         /// Compare the X coordinate of a group element (jacobian).
-        public func eq_x_var(x: Field): Bool {
+        public func eq_x_var(_x: Field): Bool {
             assert(not is_infinity());
             var r = z.sqr();
-            r := r.mul(x);
-            let r2 = x;
+            r := r.mul(_x);
+            let r2 = _x.clone();
             r2.normalize_weak();
             r.eq_var(r2)
         };
@@ -215,9 +217,9 @@ module {
         /// axis).
         public func neg_in_place(a: Jacobian) {
             infinity := a.infinity;
-            x := a.x;
-            y := a.y;
-            z := a.z;
+            x := a.x.clone();
+            y := a.y.clone();
+            z := a.z.clone();
             y.normalize_weak();
             y := y.neg(1);
         };
@@ -309,7 +311,11 @@ module {
 
         /// Set r equal to the sum of a and b. If rzr is non-NULL, r->z =
         /// a->z * *rzr (a cannot be infinity in that case).
-        public func add_var_in_place(a: Jacobian, b: Jacobian, rzr: ?Field) {
+        public func add_var_in_place(
+            a: Jacobian, 
+            b: Jacobian, 
+            rzr: ?Field
+        ) {
             if (a.is_infinity()) {
                 assert(Option.isNull(rzr));
                 assign_mut(b);
@@ -465,15 +471,22 @@ module {
         /// but without constant-time guarantee, and b is allowed to be
         /// infinity. If rzr is non-NULL, r->z = a->z * *rzr (a cannot be
         /// infinity in that case).
-        public func add_ge_var_in_place(a: Jacobian, b: Affine, rzr: ?Field) {
+        public func add_ge_var_in_place(
+            a: Jacobian, 
+            b: Affine, 
+            rzr: ?Field
+        ) {
             if (a.is_infinity()) {
                 assert(Option.isNull(rzr));
                 set_ge(b);
                 return;
             };
             if (b.is_infinity()) {
-                ignore do? {
-                    rzr!.set_int(1);
+                switch(rzr) {
+                    case null {};
+                    case (?rzr) {
+                        rzr.set_int(1);
+                    };
                 };
                 assign_mut(a);
                 return;
@@ -496,8 +509,11 @@ module {
                 if (i.normalizes_to_zero_var()) {
                     double_var_in_place(a, rzr);
                 } else {
-                    ignore do?{
-                        rzr!.set_int(0);
+                    switch(rzr) {
+                        case null {};
+                        case (?rzr) {
+                            rzr.set_int(0);
+                        };
                     };
                     infinity := true;
                 };
@@ -506,8 +522,11 @@ module {
             let i2 = i.sqr();
             let h2 = h.sqr();
             var h3 = h.mul(h2);
-            ignore do?{
-                Field.assign(rzr!, h);
+            switch(rzr) {
+                case null {};
+                case (?rzr) {
+                    rzr.assign_mut(h);
+                };
             };
             z := a.z.mul(h);
             let t = u1.mul(h2);
@@ -657,15 +676,13 @@ module {
         zr: [var Field]) {
         assert(r.size() == a.size());
 
-        var i: Nat = r.size() - 1;
-        var zi: Field = Field.Field();
-
         if (r.size() != 0) {
-            zi := a[i].z.inv();
+            var i: Nat = r.size() - 1;
+            let zi = a[i].z.inv();
             r[i].set_gej_zinv(a[i], zi);
 
             while (i > 0) {
-                zi := zi.mul(zr[i]);
+                zi.mul_assign(zr[i]);
                 i -= 1;
                 r[i].set_gej_zinv(a[i], zi);
             };
@@ -705,8 +722,8 @@ module {
     /// Create a new affine.
     public func new_af(x: Field, y: Field): Affine {
         let r = Affine();
-        r.x := x;
-        r.y := y;
+        r.x := x.clone();
+        r.y := y.clone();
         r.infinity := false;
         r
     };
@@ -714,8 +731,8 @@ module {
     /// Create a new jacobian.
     public func new_jb(x: Field, y: Field): Jacobian {
         let r = Jacobian();
-        r.x := x;
-        r.y := y;
+        r.x := x.clone();
+        r.y := y.clone();
         r.infinity := false;
         r.z := Field.new(0, 0, 0, 0, 0, 0, 0, 1);
         r
@@ -724,8 +741,8 @@ module {
     /// Create a new affine storage.
     public func new_as(x: FieldStorage, y: FieldStorage): AffineStorage {
         let r = AffineStorage();
-        r.x := x;
-        r.y := y;
+        r.x := x.clone();
+        r.y := y.clone();
         r
     };
 
@@ -739,7 +756,8 @@ module {
         new_af(a.x.from(), a.y.from())
     };
 
-    public func into_as(a: Affine): AffineStorage {
+    public func into_as(_a: Affine): AffineStorage {
+        let a = _a.clone();
         assert(not a.is_infinity());
         a.x.normalize();
         a.y.normalize();

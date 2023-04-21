@@ -28,7 +28,7 @@ module {
 
     /// Context for accelerating the computation of a*P + b*G.
     public class ECMultContext() {
-        public let pre_g = Array.init<AffineStorage>(ECMULT_TABLE_SIZE_G, Group.AffineStorage());
+        public let pre_g = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func i = Group.AffineStorage());
         let gj = Group.Jacobian();
         gj.set_ge(Group.affineStatic(Group.AFFINE_G));
         odd_multiples_table_storage_var(pre_g, gj);
@@ -39,10 +39,10 @@ module {
             na: Scalar.Scalar, 
             ng: Scalar.Scalar
         ): Jacobian {
-            let pre_a = Array.init<Affine>(ECMULT_TABLE_SIZE_A, Group.Affine());
+            let pre_a = Array.tabulateVar<Affine>(ECMULT_TABLE_SIZE_A, func i = Group.Affine());
             var z = Field.Field();
-            let wnaf_na = Array.init<Int32>(256, 0: Int32);
-            let wnaf_ng = Array.init<Int32>(256, 0: Int32);
+            let wnaf_na = Array.tabulateVar<Int32>(256, func i = 0: Int32);
+            let wnaf_ng = Array.tabulateVar<Int32>(256, func i = 0: Int32);
             let bits_na = ecmult_wnaf(wnaf_na, na, WINDOW_A);
             var bits = bits_na;
             odd_multiples_table_globalz_windowa(pre_a, z, a);
@@ -85,58 +85,58 @@ module {
         a: Scalar.Scalar, 
         w: Nat32
     ): Int32 {
-        let size = Nat32.fromNat(wnaf.size());
+        let len = Nat32.fromNat(wnaf.size());
+        let wl1 = Utils.u64(w -% 1);
         var s = a;
         var last_set_bit = -1: Int32;
         var bit = 0: Nat32;
         var sign = 1: Int32;
-        var carry = 0: Nat32;
+        var carry = 0: Nat64;
 
-        assert(wnaf.size() <= 256);
+        assert(len <= 256);
         assert(w >= 2 and w <= 31);
 
         for(i in Iter.range(0, wnaf.size()-1)) {
             wnaf[i] := 0;
         };
 
-        if(s.bits_32(255, 1) > 0) {
+        if(s.bits(255, 1) > 0) {
             s.neg_mut();
             sign := -1;
         };
 
-        label L while(bit < size) {
-            var word = 0: Nat32;
-            if(s.bits_32(bit, 1) == carry) {
-                bit += 1;
+        label L while(bit < len) {
+            if(Utils.u64(s.bits(bit, 1)) == carry) {
+                bit +%= 1;
                 continue L;
             };
 
             var now = w;
-            if(now > size - bit) {
-                now := size - bit;
+            if(now > len -% bit) {
+                now := len -% bit;
             };
 
-            word := s.bits_var(bit, now) + carry;
+            var word = Utils.u64(s.bits_var(bit, now)) +% carry;
 
-            carry := (word >> (w - 1)) & 1;
-            word -= carry << w;
+            carry := (word >> wl1) & 1;
+            word -= carry << Utils.u64(w);
 
-            wnaf[Nat32.toNat(bit)] := sign * Int32.fromNat32(word);
+            wnaf[Nat32.toNat(bit)] := sign *% Int32.fromNat32(Utils.u64u32(word));
             last_set_bit := Int32.fromNat32(bit);
 
-            bit += now;
+            bit +%= now;
         };
         assert(carry == 0);
         assert(do {
             var t = true;
             while(bit < 256) {
-                t := t and (s.bits_32(bit, 1) == 0);
-                bit += 1;
+                t := t and (s.bits(bit, 1) == 0);
+                bit +%= 1;
             };
             t
         });
         
-        return last_set_bit + 1;
+        return last_set_bit +% 1;
     };
 
     /// Set a batch of group elements equal to the inputs given in jacobian
@@ -150,10 +150,10 @@ module {
                 az_buf.add(point.z);
             };
         };
-        let az: [var Field] = Buffer.toVarArray(az_buf);
-        let azi: [var Field] = inv_all_var(az);
+        let az = Buffer.toVarArray(az_buf);
+        let azi = inv_all_var(az);
 
-        let ret = Array.init<Affine>(a.size(), Group.Affine());
+        let ret = Array.tabulateVar<Affine>(a.size(), func i = Group.Affine());
 
         var count = 0;
         for (i in Iter.range(0, a.size()-1)) {
@@ -181,18 +181,17 @@ module {
         ret_buf.add(fields[0]);
 
         for (i in Iter.range(1, fields.size()-1)) {
-            ret_buf.add(Field.Field());
-            ret_buf.put(i, ret_buf.get(i-1).mul(fields[i]));
+            ret_buf.add(ret_buf.get(i-1).mul(fields[i]));
         };
         let ret = Buffer.toVarArray(ret_buf);
 
         var u = ret[fields.size() - 1].inv_var();
 
-        for (i in Iter.range(fields.size()-1, 1)) {
-            let j: Nat = i;
-            let x: Nat = i - 1;
+        for (i in Iter.revRange(fields.size()-1, 1)) {
+            let j: Nat = Int.abs(i);
+            let x: Nat = j - 1;
             ret[j] := ret[x].mul(u);
-            u := u.mul(fields[j]);
+            u.mul_assign(fields[j]);
         };
 
         ret[0] := u;
@@ -222,9 +221,9 @@ module {
 
     /// Context for accelerating the computation of a*G.
     public class ECMultGenContext() {
-        public var prec = Array.init<[var AffineStorage]>(
-            64, Array.init<AffineStorage>(
-                16, Group.AffineStorage()));
+        public var prec = Array.tabulateVar<[var AffineStorage]>(
+            64, func i = Array.tabulateVar<AffineStorage>(
+                16, func i = Group.AffineStorage()));
         public var blind = Scalar.Scalar();
         public var initial = Group.Jacobian();
     };
@@ -234,8 +233,8 @@ module {
         globalz: Field.Field,
         a: Jacobian,
     ) {
-        let prej = Array.init<Jacobian>(ECMULT_TABLE_SIZE_A, Group.Jacobian());
-        let zr = Array.init<Field.Field>(ECMULT_TABLE_SIZE_A, Field.Field());
+        let prej = Array.tabulateVar<Jacobian>(ECMULT_TABLE_SIZE_A, func i = Group.Jacobian());
+        let zr = Array.tabulateVar<Field.Field>(ECMULT_TABLE_SIZE_A, func i = Field.Field());
 
         odd_multiples_table(prej, zr, a);
         Group.globalz_set_table_gej(pre, globalz, prej, zr);
@@ -247,12 +246,12 @@ module {
         w: Int32
     ): Group.Affine {
         assert(n & 1 == 1);
-        assert(n >= -((1 << (w - 1)) - 1));
-        assert(n <= ((1 << (w - 1)) - 1));
+        assert(n >= -((1 << (w -% 1)) -% 1));
+        assert(n <= ((1 << (w -% 1)) -% 1));
         if(n > 0) {
-            return pre[Int.abs(Int32.toInt((n - 1) / 2))];
+            return pre[Int.abs(Int32.toInt((n -% 1) >> 1))].clone();
         } else {
-            return pre[Int.abs(Int32.toInt((-n - 1) / 2))].neg();
+            return pre[Int.abs(Int32.toInt((-n -% 1) >> 1))].neg();
         };
     };
 
@@ -262,12 +261,12 @@ module {
         w: Int32
     ): Group.Affine {
         assert(n & 1 == 1);
-        assert(n >= -((1 << (w - 1)) - 1));
-        assert(n <= ((1 << (w - 1)) - 1));
+        assert(n >= -((1 << (w -% 1)) -% 1));
+        assert(n <= ((1 << (w -% 1)) -% 1));
         if(n > 0) {
-            return Group.from_as(pre[Int.abs(Int32.toInt((n - 1) / 2))]); // FIXME: calling .into() on Rust
+            return Group.from_as(pre[Int.abs(Int32.toInt((n -% 1) >> 1))]);
         } else {
-            let r = Group.from_as(pre[Int.abs(Int32.toInt((-n - 1) / 2))]); // FIXME: calling .into() on Rust
+            let r = Group.from_as(pre[Int.abs(Int32.toInt((-n -% 1) >> 1))]);
             return r.neg();
         };
     };
@@ -287,12 +286,12 @@ module {
 
         let a_ge = Group.Affine();
         a_ge.set_gej_zinv(a, d.z);
-        prej[0].x := a_ge.x;
-        prej[0].y := a_ge.y;
-        prej[0].z := a.z;
+        prej[0].x := a_ge.x.clone();
+        prej[0].y := a_ge.y.clone();
+        prej[0].z := a.z.clone();
         prej[0].infinity := false;
 
-        zr[0] := d.z;
+        zr[0] := d.z.clone();
         for (i in Iter.range(1, len-1)) {
             prej[i] := prej[i-1].add_ge_var(d_ge, ?zr[i]);
         };
@@ -305,9 +304,9 @@ module {
         pre: [var AffineStorage], 
         a: Jacobian
     ) {
-        let prej = Array.init<Jacobian>(pre.size(), Group.Jacobian());
-        let prea = Array.init<Affine>(pre.size(), Group.Affine());
-        let zr = Array.init<Field>(pre.size(), Field.Field());
+        let prej = Array.tabulateVar<Jacobian>(pre.size(), func i = Group.Jacobian());
+        let prea = Array.tabulateVar<Affine>(pre.size(), func i = Group.Affine());
+        let zr = Array.tabulateVar<Field>(pre.size(), func i = Field.Field());
 
         odd_multiples_table(prej, zr, a);
         Group.set_table_gej_var(prea, prej, zr);

@@ -20,7 +20,7 @@ module {
         /// where p = 2^256 - 0x1000003D1
         ///
         /// The least signifiant byte is in the front.
-        public var n: [var Nat32] = Array.init<Nat32>(10, 0);
+        public var n: [var Nat32] = Array.tabulateVar<Nat32>(10, func i = 0);
         public var magnitude: Nat32 = 0;
         public var normalized: Bool = true;
 
@@ -631,7 +631,7 @@ module {
         /// Convert a field element to a 32-byte big endian
         /// value. Requires the input to be normalized.
         public func b32(): [var Nat8] {
-            var r = Array.init<Nat8>(32, 0);
+            var r = Array.tabulateVar<Nat8>(32, func i = 0);
             fill_b32(r, 0);
             r
         };
@@ -1796,74 +1796,74 @@ module {
         public func sqrt(): (Field, Bool) {
             let _self = clone();
             var x2 = sqr();
-            x2 := x2.mul(_self);
+            x2.mul_assign(_self);
 
             var x3 = x2.sqr();
-            x3 := x3.mul(_self);
+            x3.mul_assign(_self);
 
             var x6 = x3;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x6 := x6.sqr();
             };
-            x6 := x6.mul(x3);
+            x6.mul_assign(x3);
 
             var x9 = x6;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x9 := x9.sqr();
             };
-            x9 := x9.mul(x3);
+            x9.mul_assign(x3);
 
             var x11 = x9;
             for (_ in (Iter.range(0, 1))) { //0..2
                 x11 := x11.sqr();
             };
-            x11 := x11.mul(x2);
+            x11.mul_assign(x2);
 
             var x22 = x11;
             for (_ in (Iter.range(0, 10))) { //0..11
                 x22 := x22.sqr();
             };
-            x22 := x22.mul(x11);
+            x22.mul_assign(x11);
 
             var x44 = x22;
             for (_ in (Iter.range(0, 21))) { //0..22
                 x44 := x44.sqr();
             };
-            x44 := x44.mul(x22);
+            x44.mul_assign(x22);
 
             var x88 = x44;
             for (_ in (Iter.range(0, 43))) { //0..44
                 x88 := x88.sqr();
             };
-            x88 := x88.mul(x44);
+            x88.mul_assign(x44);
 
             var x176 = x88;
             for (_ in (Iter.range(0, 87))) { //0..88
                 x176 := x176.sqr();
             };
-            x176 := x176.mul(x88);
+            x176.mul_assign(x88);
 
             var x220 = x176;
             for (_ in (Iter.range(0, 43))) { //0..44
                 x220 := x220.sqr();
             };
-            x220 := x220.mul(x44);
+            x220.mul_assign(x44);
 
             var x223 = x220;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x223 := x223.sqr();
             };
-            x223 := x223.mul(x3);
+            x223.mul_assign(x3);
 
             var t1 = x223;
             for (_ in (Iter.range(0, 22))) { //0..23
                 t1 := t1.sqr();
             };
-            t1 := t1.mul(x22);
+            t1.mul_assign(x22);
             for (_ in (Iter.range(0, 5))) { //0..6
                 t1 := t1.sqr();
             };
-            t1 := t1.mul(x2);
+            t1.mul_assign(x2);
             t1 := t1.sqr();
             let r = t1.sqr();
 
@@ -1880,75 +1880,75 @@ module {
             x2 := x2.mul(_self);
 
             var x3 = x2.sqr();
-            x3 := x3.mul(_self);
+            x3.mul_assign(_self);
 
             var x6 = x3;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x6 := x6.sqr();
             };
-            x6 := x6.mul(x3);
+            x6.mul_assign(x3);
 
             var x9 = x6;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x9 := x9.sqr();
             };
-            x9 := x9.mul(x3);
+            x9.mul_assign(x3);
 
             var x11 = x9;
             for (_ in (Iter.range(0, 1))) { //0..2
                 x11 := x11.sqr();
             };
-            x11 := x11.mul(x2);
+            x11.mul_assign(x2);
 
             var x22 = x11;
             for (_ in (Iter.range(0, 10))) { //0..11
                 x22 := x22.sqr();
             };
-            x22 := x22.mul(x11);
+            x22.mul_assign(x11);
 
             var x44 = x22;
             for (_ in (Iter.range(0, 21))) { //0..22
                 x44 := x44.sqr();
             };
-            x44 := x44.mul(x22);
+            x44.mul_assign(x22);
 
             var x88 = x44;
             for (_ in (Iter.range(0, 43))) { //0..44
                 x88 := x88.sqr();
             };
-            x88 := x88.mul(x44);
+            x88.mul_assign(x44);
 
             var x176 = x88;
             for (_ in (Iter.range(0, 87))) { //0..88
                 x176 := x176.sqr();
             };
-            x176 := x176.mul(x88);
+            x176.mul_assign(x88);
 
             var x220 = x176;
             for (_ in (Iter.range(0, 43))) { //0..44
                 x220 := x220.sqr();
             };
-            x220 := x220.mul(x44);
+            x220.mul_assign(x44);
 
             var x223 = x220;
             for (_ in (Iter.range(0, 2))) { //0..3
                 x223 := x223.sqr();
             };
-            x223 := x223.mul(x3);
+            x223.mul_assign(x3);
 
             var t1 = x223;
             for (_ in (Iter.range(0, 22))) { //0..23
                 t1 := t1.sqr();
             };
-            t1 := t1.mul(x22);
+            t1.mul_assign(x22);
             for (_ in (Iter.range(0, 4))) { //0..5
                 t1 := t1.sqr();
             };
-            t1 := t1.mul(_self);
+            t1.mul_assign(_self);
             for (_ in (Iter.range(0, 2))) { //0..3
                 t1 := t1.sqr();
             };
-            t1 := t1.mul(x2);
+            t1.mul_assign(x2);
             for (_ in (Iter.range(0, 1))) { //0..2
                 t1 := t1.sqr();
             };
@@ -2141,8 +2141,21 @@ module {
 
     /// Compact field element storage.
     public class FieldStorage() {
-        public var n: [var Nat32] = Array.init<Nat32>(8, 0);
+        public var n: [var Nat32] = Array.tabulateVar<Nat32>(8, func i = 0);
         public let len: Nat = 8;
+
+        public func clone(): FieldStorage {
+            let fs = FieldStorage();
+            fs.n[0] := n[0];
+            fs.n[1] := n[1];
+            fs.n[2] := n[2];
+            fs.n[3] := n[3];
+            fs.n[4] := n[4];
+            fs.n[5] := n[5];
+            fs.n[6] := n[6];
+            fs.n[7] := n[7];
+            return fs;
+        };
 
         public func cmov(other: FieldStorage, flag: Bool) {
             n[0] := if flag { other.n[0] } else { n[0] };
