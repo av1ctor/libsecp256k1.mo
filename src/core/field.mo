@@ -2124,21 +2124,6 @@ module {
         ret
     };
 
-    public func assign(ret: Field, a: Field) {
-        ret.n[0] := a.n[0];
-        ret.n[1] := a.n[1];
-        ret.n[2] := a.n[2];
-        ret.n[3] := a.n[3];
-        ret.n[4] := a.n[4];
-        ret.n[5] := a.n[5];
-        ret.n[6] := a.n[6];
-        ret.n[7] := a.n[7];
-        ret.n[8] := a.n[8];
-        ret.n[9] := a.n[9];
-        ret.magnitude := a.magnitude;
-        ret.normalized := a.normalized;
-    };
-
     /// Compact field element storage.
     public class FieldStorage() {
         public var n: [var Nat32] = Array.tabulateVar<Nat32>(8, func i = 0);

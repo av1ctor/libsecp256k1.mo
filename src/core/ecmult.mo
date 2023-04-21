@@ -87,7 +87,7 @@ module {
     ): Int32 {
         let len = Nat32.fromNat(wnaf.size());
         let wl1 = Utils.u64(w -% 1);
-        var s = a;
+        var s = a.clone();
         var last_set_bit = -1: Int32;
         var bit = 0: Nat32;
         var sign = 1: Int32;
@@ -147,7 +147,7 @@ module {
         let az_buf = Buffer.Buffer<Field>(a.size());
         for (point in Array.vals(a)) {
             if (not point.is_infinity()) {
-                az_buf.add(point.z);
+                az_buf.add(point.z.clone());
             };
         };
         let az = Buffer.toVarArray(az_buf);

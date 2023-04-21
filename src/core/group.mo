@@ -273,7 +273,7 @@ module {
             switch(rzr) {
                 case null {};
                 case (?rzr) {
-                    Field.assign(rzr, a.y);
+                    rzr.assign_mut(a.y);
                     rzr.normalize_weak();
                     rzr.mul_int(2);
                 };
@@ -702,11 +702,11 @@ module {
         var zs: Field = Field.Field();
 
         if (r.size() != 0) {
-            r[i].x := a[i].x;
-            r[i].y := a[i].y;
-            Field.assign(globalz, a[i].z);
+            r[i].x := a[i].x.clone();
+            r[i].y := a[i].y.clone();
+            globalz.assign_mut(a[i].z);
             r[i].infinity := false;
-            zs := zr[i];
+            zs := zr[i].clone();
 
             while (i > 0) {
                 let temp: Nat = r.size() - 1;
