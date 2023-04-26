@@ -38,7 +38,7 @@ module {
             a: Jacobian, 
             na: Scalar.Scalar, 
             ng: Scalar.Scalar
-        ): Jacobian {
+        ) {
             let pre_a = Array.tabulateVar<Affine>(ECMULT_TABLE_SIZE_A, func i = Group.Affine());
             var z = Field.Field();
             let wnaf_na = Array.tabulateVar<Int32>(256, func i = 0: Int32);
@@ -52,31 +52,27 @@ module {
                 bits := bits_ng;
             };
 
-            var rr = Group.Jacobian();
-            rr.assign_mut(r);
-            rr.set_infinity();
+            r.set_infinity();
             for(ii in Iter.revRange(Nat32.toNat(Int32.toNat32(bits))-1, 0)) {
                 let i = Int.abs(ii);
-                rr := rr.double_var(null);
+                r.double_var_in_place(r.clone(), null);
 
                 let n1 = wnaf_na[i];
                 if(i < Int32.toInt(bits_na) and n1 != 0) {
                     let tmpa = table_get_ge(pre_a, n1, Int32.fromNat32(WINDOW_A));
-                    rr := rr.add_ge_var(tmpa, null);
+                    r.add_ge_var_in_place(r.clone(), tmpa, null);
                 };
                 
                 let n2 = wnaf_ng[i];
                 if(i < Int32.toInt(bits_ng) and n2 != 0) {
                     let tmpa = table_get_ge_storage(pre_g, n2, Int32.fromNat32(WINDOW_G));
-                    rr := rr.add_zinv_var(tmpa, z);
+                    r.add_zinv_var_in_place(r.clone(), tmpa, z);
                 };
             };
 
-            if(not rr.is_infinity()) {
-                rr.z.assign_mut(z);
+            if(not r.is_infinity()) {
+                r.z.mul_assign(z);
             };
-
-            return rr;
         };
     };
 
@@ -119,7 +115,7 @@ module {
             var word = Utils.u64(s.bits_var(bit, now)) +% carry;
 
             carry := (word >> wl1) & 1;
-            word -= carry << Utils.u64(w);
+            word -%= carry << Utils.u64(w);
 
             wnaf[Nat32.toNat(bit)] := sign *% Int32.fromNat32(Utils.u64u32(word));
             last_set_bit := Int32.fromNat32(bit);
