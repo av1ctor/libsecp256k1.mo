@@ -53,7 +53,7 @@ module {
         u1.neg_mut();
         let u2 = rn.mul(sigs);
         var qj = Group.Jacobian();
-        qj := self.ecmult(qj, xj, u2, u1);
+        self.ecmult(qj, xj, u2, u1);
 
         let pubkey = Group.Affine();
         pubkey.set_gej_var(qj);
