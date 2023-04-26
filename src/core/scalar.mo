@@ -2554,100 +2554,100 @@ module {
 
     };
 
-    public func muladd(c0: Nat32, c1: Nat32, c2: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
-        var c3 = c0;
-        var c4 = c1;
-        var c5 = c2;
+    public func muladd(c0_: Nat32, c1_: Nat32, c2_: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
+        var c0 = c0_;
+        var c1 = c1_;
+        var c2 = c2_;
 
         let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
-        c3 +%= tl;
-        th +%= Utils.boolu32(c3 < tl);
-        c4 +%= th;
-        c5 +%= Utils.boolu32(c4 < th);
-        assert(c4 >= th or c5 != 0);
-        (c3, c4, c5)
+        c0 +%= tl;
+        th +%= Utils.boolu32(c0 < tl);
+        c1 +%= th;
+        c2 +%= Utils.boolu32(c1 < th);
+        assert(c1 >= th or c2 != 0);
+        (c0, c1, c2)
     };
 
-    public func muladd_fast(c0: Nat32, c1: Nat32, c2: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
-        var c3 = c0;
-        var c4 = c1;
-        var c5 = c2;
+    public func muladd_fast(c0_: Nat32, c1_: Nat32, c2_: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
+        var c0 = c0_;
+        var c1 = c1_;
+        var c2 = c2_;
 
         let t = u64(a) *% u64(b);
         var th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
-        c3 +%= tl;
-        th +%= Utils.boolu32(c3 < tl);
-        c4 +%= th;
-        assert(c4 >= th);
-        (c3, c4, c5)
+        c0 +%= tl;
+        th +%= Utils.boolu32(c0 < tl);
+        c1 +%= th;
+        assert(c1 >= th);
+        (c0, c1, c2)
     };
 
-    public func muladd2(c0: Nat32, c1: Nat32, c2: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
-        var c3 = c0;
-        var c4 = c1;
-        var c5 = c2;
+    public func muladd2(c0_: Nat32, c1_: Nat32, c2_: Nat32, a: Nat32, b: Nat32): (Nat32, Nat32, Nat32) {
+        var c0 = c0_;
+        var c1 = c1_;
+        var c2 = c2_;
 
         let t = u64(a) *% u64(b);
         let th: Nat32 = u64u32(t >> 32);
         let tl = u64u32(t);
         var th2 = th +% th;
-        c5 +%= Utils.boolu32(th2 < th);
-        assert(th2 >= th or c5 != 0);
+        c2 +%= Utils.boolu32(th2 < th);
+        assert(th2 >= th or c2 != 0);
         let tl2 = tl +% tl;
         th2 +%= Utils.boolu32(tl2 < tl);
-        c3 +%= tl2;
-        th2 +%= Utils.boolu32(c3 < tl2);
-        c5 +%= Utils.boolu32(c3 < tl2 and th2 == 0 );
-        assert(c3 >= tl2 or th2 != 0 or c5 != 0);
+        c0 +%= tl2;
+        th2 +%= Utils.boolu32(c0 < tl2);
+        c2 +%= Utils.boolu32(c0 < tl2 and th2 == 0 );
+        assert(c0 >= tl2 or th2 != 0 or c2 != 0);
 
-        c4 +%= th2;
-        c5 +%= Utils.boolu32(c4 < th2);
-        assert(c4 >= th2 or c5 != 0);
-        (c3, c4, c5)
+        c1 +%= th2;
+        c2 +%= Utils.boolu32(c1 < th2);
+        assert(c1 >= th2 or c2 != 0);
+        (c0, c1, c2)
     };
 
 
-    public func sumadd(c0: Nat32, c1: Nat32, c2: Nat32, a: Nat32): (Nat32, Nat32, Nat32) {
-        var c3 = c0;
-        var c4 = c1;
-        var c5 = c2;
+    public func sumadd(c0_: Nat32, c1_: Nat32, c2_: Nat32, a: Nat32): (Nat32, Nat32, Nat32) {
+        var c0 = c0_;
+        var c1 = c1_;
+        var c2 = c2_;
 
-        c3 +%= a;
-        let over = Utils.boolu32(c3 < a);
-        c4 +%= over;
-        c5 +%= Utils.boolu32(c4 < over);
-        (c3, c4, c5)
+        c0 +%= a;
+        let over = Utils.boolu32(c0 < a);
+        c1 +%= over;
+        c2 +%= Utils.boolu32(c1 < over);
+        (c0, c1, c2)
     };
 
-    public func sumadd_fast(c0: Nat32, c1: Nat32, c2: Nat32, a: Nat32): (Nat32, Nat32, Nat32) {
-        var c3 = c0;
-        var c4 = c1;
-        var c5 = c2;
+    public func sumadd_fast(c0_: Nat32, c1_: Nat32, c2_: Nat32, a: Nat32): (Nat32, Nat32, Nat32) {
+        var c0 = c0_;
+        var c1 = c1_;
+        var c2 = c2_;
 
-        c3 +%= a;
-        c4 +%= Utils.boolu32(c3 < a);
-        assert(c4 != 0 or c3 >= a);
-        assert(c5 == 0);
-        (c3, c4, c5)
+        c0 +%= a;
+        c1 +%= Utils.boolu32(c0 < a);
+        assert(c1 != 0 or c0 >= a);
+        assert(c2 == 0);
+        (c0, c1, c2)
     };
 
     public func extract(c0: Nat32, c1: Nat32, c2: Nat32): (Nat32, Nat32, Nat32, Nat32) {
         let n = c0;
-        let ta0 = c1;
-        let ta1 = c2;
-        let ta2: Nat32 = 0;
-        (ta0, ta1, ta2, n)
+        let t0 = c1;
+        let t1 = c2;
+        let t2: Nat32 = 0;
+        (t0, t1, t2, n)
     };
 
     public func extract_fast(c0: Nat32, c1: Nat32, c2: Nat32): (Nat32, Nat32, Nat32, Nat32) {
         let n = c0;
-        let ta0 = c1;
-        let ta1: Nat32 = 0;
+        let t0 = c1;
+        let t1: Nat32 = 0;
         assert(c2 == 0);
-        (ta0, ta1, c2, n)
+        (t0, t1, c2, n)
     };
 
     
