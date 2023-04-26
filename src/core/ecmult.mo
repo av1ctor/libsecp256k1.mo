@@ -43,11 +43,11 @@ module {
             var z = Field.Field();
             let wnaf_na = Array.tabulateVar<Int32>(256, func i = 0: Int32);
             let wnaf_ng = Array.tabulateVar<Int32>(256, func i = 0: Int32);
-            let bits_na = ecmult_wnaf(wnaf_na, na, WINDOW_A);
+            let bits_na = ecmult_wnaf(wnaf_na, na, Nat64.fromNat(Nat32.toNat(WINDOW_A)));
             var bits = bits_na;
             odd_multiples_table_globalz_windowa(pre_a, z, a);
 
-            let bits_ng = ecmult_wnaf(wnaf_ng, ng, WINDOW_G);
+            let bits_ng = ecmult_wnaf(wnaf_ng, ng, Nat64.fromNat(Nat32.toNat(WINDOW_G)));
             if(bits_ng > bits) {
                 bits := bits_ng;
             };
@@ -79,15 +79,15 @@ module {
     public func ecmult_wnaf(
         wnaf: [var Int32], 
         a: Scalar.Scalar, 
-        w: Nat32
+        w: Nat64
     ): Int32 {
-        let len = Nat32.fromNat(wnaf.size());
-        let wl1 = Utils.u64(w -% 1);
+        let len = Nat64.fromNat(wnaf.size());
+        let wl1 = Int32.fromNat32(Nat32.fromNat(Nat64.toNat(w -% 1)));
         var s = a.clone();
         var last_set_bit = -1: Int32;
-        var bit = 0: Nat32;
+        var bit = 0: Nat64;
         var sign = 1: Int32;
-        var carry = 0: Nat64;
+        var carry = 0: Int32;
 
         assert(len <= 256);
         assert(w >= 2 and w <= 31);
@@ -102,7 +102,7 @@ module {
         };
 
         label L while(bit < len) {
-            if(Utils.u64(s.bits(bit, 1)) == carry) {
+            if(s.bits(bit, 1) == Int32.toNat32(carry)) {
                 bit +%= 1;
                 continue L;
             };
@@ -112,13 +112,13 @@ module {
                 now := len -% bit;
             };
 
-            var word = Utils.u64(s.bits_var(bit, now)) +% carry;
+            var word = Int32.fromNat32(s.bits_var(bit, now)) +% carry;
 
             carry := (word >> wl1) & 1;
-            word -%= carry << Utils.u64(w);
+            word -%= carry << Int32.fromNat32(Nat32.fromNat(Nat64.toNat(w)));
 
-            wnaf[Nat32.toNat(bit)] := sign *% Int32.fromNat32(Utils.u64u32(word));
-            last_set_bit := Int32.fromNat32(bit);
+            wnaf[Nat64.toNat(bit)] := sign *% word;
+            last_set_bit := Int32.fromNat32(Nat32.fromNat(Nat64.toNat(bit)));
 
             bit +%= now;
         };
@@ -244,11 +244,13 @@ module {
         assert(n & 1 == 1);
         assert(n >= -((1 << (w -% 1)) -% 1));
         assert(n <= ((1 << (w -% 1)) -% 1));
-        if(n > 0) {
-            return pre[Int.abs(Int32.toInt((n -% 1) >> 1))].clone();
+        let r = if(n > 0) {
+            pre[Int.abs(Int32.toInt((n -% 1) >> 1))].clone();
         } else {
-            return pre[Int.abs(Int32.toInt((-n -% 1) >> 1))].neg();
+            pre[Int.abs(Int32.toInt((-n -% 1) >> 1))].neg();
         };
+
+        return r;
     };
 
     func table_get_ge_storage(
@@ -259,12 +261,13 @@ module {
         assert(n & 1 == 1);
         assert(n >= -((1 << (w -% 1)) -% 1));
         assert(n <= ((1 << (w -% 1)) -% 1));
-        if(n > 0) {
-            return Group.from_as(pre[Int.abs(Int32.toInt((n -% 1) >> 1))]);
+        let r = if(n > 0) {
+            Group.from_as(pre[Int.abs(Int32.toInt((n -% 1) >> 1))]);
         } else {
             let r = Group.from_as(pre[Int.abs(Int32.toInt((-n -% 1) >> 1))]);
-            return r.neg();
+            r.neg();
         };
+        return r;
     };
 
     public func odd_multiples_table(
