@@ -21,7 +21,7 @@ module {
 
     let MaxU32: Nat32 = 0xffff_ffff;
 
-    let SECP256K1_N: [Nat32] = [0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xB_cEDCE6, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF];
+    let SECP256K1_N: [Nat32] = [0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF];
     let SECP256K1_N_C_0: Nat32 = 0x2FC9BEBF;
     let SECP256K1_N_C_1: Nat32 = 0x402DA173;
     let SECP256K1_N_C_2: Nat32 = 0x50B75FC4;
@@ -93,18 +93,20 @@ module {
         /// Access bits from a scalar. All requested bits must belong to
         /// the same 32-bit limb. can be used in wasm32
         public func bits(
-            offset: Nat32, 
-            count: Nat32
+            offset: Nat64, 
+            count: Nat64
         ): Nat32 {
             assert((offset +% count -% 1) >> 5 == offset >> 5);
-            let index: Nat32 = offset >> 5;
-            (n[Nat32.toNat(index)] >> (offset & 0x1F)) & ((1 << count) - 1)
+            let index = Nat64.toNat(offset >> 5);
+            return Nat32.fromNat(Nat64.toNat(
+                (Nat64.fromNat(Nat32.toNat(n[index])) >> (offset & 0x1F)) & ((1 << count) - 1)
+            ));
         };
 
         /// Access bits from a scalar. Not constant time.
         public func bits_var(
-            offset: Nat32, 
-            count: Nat32
+            offset: Nat64, 
+            count: Nat64
         ): Nat32 {
             assert(count < 32);
             assert(offset +% count <= 256);
@@ -112,9 +114,12 @@ module {
                 bits(offset, count)
             } else {
                 assert((offset >> 5) +% 1 < 8);
-                ((n[Nat32.toNat(offset >> 5)] >> (offset & 0x1f))
-                    | (n[Nat32.toNat((offset >> 5) +% 1)] << (32 -% (offset & 0x1f))))
-                    & ((1 << count) -% 1)
+                let index = Nat64.toNat(offset >> 5);
+                return Nat32.fromNat(Nat64.toNat(
+                    ((Nat64.fromNat(Nat32.toNat(n[index])) >> (offset & 0x1f))
+                        | (Nat64.fromNat(Nat32.toNat(n[index + 1])) << (32 -% (offset & 0x1f))))
+                        & ((1 << count) -% 1)
+                ));
             };
         };
 
