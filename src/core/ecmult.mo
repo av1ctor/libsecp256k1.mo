@@ -10,6 +10,8 @@ import Group "group";
 import Scalar "scalar";
 import Utils "utils";
 import Subtle "../subtle/lib";
+import Blob "mo:base/Blob";
+import Nat8 "mo:base/Nat8";
 
 module {
     type Field = Field.Field;
@@ -26,7 +28,7 @@ module {
     public let ECMULT_TABLE_SIZE_G: Nat = 16384; // 1 << (WINDOW_G - 2);
     public let WNAF_BITS: Nat = 256;
 
-    func _calcGTable(
+    func _calcPreG(
     ): [AffineStorage] {
         let pre_g = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func i = Group.AffineStorage());
         let gj = Group.Jacobian();
@@ -35,12 +37,41 @@ module {
         return Array.freeze(pre_g);
     };
 
+    public func calcPreGFast(
+        pre_g: Blob
+    ): [AffineStorage] {
+        let arr = Blob.toArray(pre_g);
+        assert(arr.size() == ECMULT_TABLE_SIZE_G * 2 * 8 * 4);
+
+        let _leArrayToNat32 = func (ofs: Nat): Nat32 {
+            return Nat32.fromNat(Nat8.toNat(arr[ofs+0])) 
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+1])) << 8 
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+2])) << 16
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+3])) << 24;
+        };
+
+        let res = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func (i) {
+            let offset = i * 2 * 8 * 4;
+            let af = Group.AffineStorage();
+            af.x.n := Array.tabulateVar<Nat32>(8, func (j) {
+                _leArrayToNat32(offset + j * 4);
+            });
+            af.y.n := Array.tabulateVar<Nat32>(8, func (j) {
+                _leArrayToNat32(offset + 8 * 4 + j * 4);
+            });
+            
+            return af;
+        });
+
+        return Array.freeze(res);
+    };
+
     /// Context for accelerating the computation of a*P + b*G.
     public class ECMultContext(
         _pre_g: ?[AffineStorage]
     ) {
         public let pre_g: [AffineStorage] = switch(_pre_g) {
-            case (null) _calcGTable(); 
+            case (null) _calcPreG(); 
             case (?tb) tb;
         };
 
