@@ -54,10 +54,10 @@ module {
             let offset = i * 2 * 8 * 4;
             let af = Group.AffineStorage();
             af.x.n := Array.tabulateVar<Nat32>(8, func (j) {
-                _leArrayToNat32(offset + j * 4);
+                _leArrayToNat32(offset + ((8-1) * 4) - (j * 4));
             });
             af.y.n := Array.tabulateVar<Nat32>(8, func (j) {
-                _leArrayToNat32(offset + 8 * 4 + j * 4);
+                _leArrayToNat32(offset + (8 * 4) + ((8-1) * 4) - (j * 4));
             });
             
             return af;
