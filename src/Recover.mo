@@ -14,7 +14,7 @@ module {
 
     public func alloc_context(
     ): Context {
-        return ECMult.ECMultContext();
+        return ECMult.ECMultContext(null);
     };
     
     /// Recover public key from a signed message, using the given context.

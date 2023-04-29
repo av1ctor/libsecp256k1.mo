@@ -26,12 +26,23 @@ module {
     public let ECMULT_TABLE_SIZE_G: Nat = 16384; // 1 << (WINDOW_G - 2);
     public let WNAF_BITS: Nat = 256;
 
-    /// Context for accelerating the computation of a*P + b*G.
-    public class ECMultContext() {
-        public let pre_g = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func i = Group.AffineStorage());
+    func _calcGTable(
+    ): [AffineStorage] {
+        let pre_g = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func i = Group.AffineStorage());
         let gj = Group.Jacobian();
         gj.set_ge(Group.affineStatic(Group.AFFINE_G));
         odd_multiples_table_storage_var(pre_g, gj);
+        return Array.freeze(pre_g);
+    };
+
+    /// Context for accelerating the computation of a*P + b*G.
+    public class ECMultContext(
+        _pre_g: ?[AffineStorage]
+    ) {
+        public let pre_g: [AffineStorage] = switch(_pre_g) {
+            case (null) _calcGTable(); 
+            case (?tb) tb;
+        };
 
         public func ecmult(
             r: Jacobian, 
@@ -254,7 +265,7 @@ module {
     };
 
     func table_get_ge_storage(
-        pre: [var Group.AffineStorage], 
+        pre: [Group.AffineStorage], 
         n: Int32, 
         w: Int32
     ): Group.Affine {
