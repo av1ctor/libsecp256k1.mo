@@ -1970,25 +1970,19 @@ module {
         /// If flag is true, set *r equal to *a; otherwise leave
         /// it. Constant-time.
         public func cmov(other: Field, flag: Bool) {
-            n[0] := if flag { other.n[0] } else { n[0] };
-            n[1] := if flag { other.n[1] } else { n[1] };
-            n[2] := if flag { other.n[2] } else { n[2] };
-            n[3] := if flag { other.n[3] } else { n[3] };
-            n[4] := if flag { other.n[4] } else { n[4] };
-            n[5] := if flag { other.n[5] } else { n[5] };
-            n[6] := if flag { other.n[6] } else { n[6] };
-            n[7] := if flag { other.n[7] } else { n[7] };
-            n[8] := if flag { other.n[8] } else { n[8] };
-            n[9] := if flag { other.n[9] } else { n[9] };
-            magnitude := if flag {
-                other.magnitude
-            } else {
-                magnitude
-            };
-            normalized := if flag {
-                other.normalized
-            } else {
-                normalized
+            if flag {
+                n[0] := other.n[0];
+                n[1] := other.n[1];
+                n[2] := other.n[2];
+                n[3] := other.n[3];
+                n[4] := other.n[4];
+                n[5] := other.n[5];
+                n[6] := other.n[6];
+                n[7] := other.n[7];
+                n[8] := other.n[8];
+                n[9] := other.n[9];
+                magnitude := other.magnitude;
+                normalized := other.normalized;
             };
         };
 

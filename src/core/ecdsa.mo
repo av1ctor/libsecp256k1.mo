@@ -1,10 +1,11 @@
+import Result "mo:base/Result";
+import Array "mo:base/Array";
 import Field "field";
 import Group "group";
 import Scalar "scalar";
 import Ecmult "ecmult";
-import Result "mo:base/Result";
 import Error "error";
-import Array "mo:base/Array";
+import Choice "../subtle";
 
 module {
     let P_MINUS_ORDER = func (): Field.Field = 
@@ -64,4 +65,40 @@ module {
             #ok(pubkey)
         };
     };
+
+    public func sign_raw(
+        self: Ecmult.ECMultGenContext,
+        seckey: Scalar.Scalar,
+        message: Scalar.Scalar,
+        nonce: Scalar.Scalar
+    ): Result.Result<(Scalar.Scalar, Scalar.Scalar, Nat8), Error.Error> {
+        let rp = Group.Jacobian();
+        self.ecmult_gen(rp, nonce);
+        let r = Group.Affine();
+        r.set_gej(rp);
+        r.x.normalize();
+        r.y.normalize();
+        let b = Array.freeze(r.x.b32());
+        let sigr = Scalar.Scalar();
+        let overflow = Choice.from(sigr.set_b32(b, 0));
+        assert(not sigr.is_zero());
+        assert(not overflow);
+
+        var recid = (if(overflow) 2: Nat8 else 0: Nat8) | (if(r.y.is_odd()) 1: Nat8 else 0: Nat8);
+        let n = sigr.mul(seckey);
+        n.add_assign(message);
+        let sigs = nonce.inv();
+        sigs.mul_assign(n);
+        n.clear();
+        rp.clear();
+        r.clear();
+        if(sigs.is_zero()) {
+            return #err(#InvalidMessage);
+        };
+        if(sigs.is_high()) {
+            sigs.neg_mut();
+            recid ^= 1;
+        };
+        return #ok((sigr, sigs, recid));
+    }
 };

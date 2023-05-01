@@ -54,7 +54,6 @@ module {
             ret
         };
 
-
         public func assign_mut(a: Scalar) {
             n[0] := a.n[0];
             n[1] := a.n[1];
@@ -88,6 +87,17 @@ module {
             n[5] := 0;
             n[6] := 0;
             n[7] := 0;
+        };
+
+        public func set(arr: [Nat32]) {
+            n[0] := arr[0];
+            n[1] := arr[1];
+            n[2] := arr[2];
+            n[3] := arr[3];
+            n[4] := arr[4];
+            n[5] := arr[5];
+            n[6] := arr[6];
+            n[7] := arr[7];
         };
 
         /// Access bits from a scalar. All requested bits must belong to

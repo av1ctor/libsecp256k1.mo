@@ -337,13 +337,13 @@ module {
             let z12 = a.z.sqr();
             let u1 = a.x.mul(z22);
             let u2 = b.x.mul(z12);
-            var s1 = a.y.mul(z22);
+            let s1 = a.y.mul(z22);
             s1.mul_assign(b.z);
-            var s2 = b.y.mul(z12);
+            let s2 = b.y.mul(z12);
             s2.mul_assign(a.z);
-            var h = u1.neg(1);
+            let h = u1.neg(1);
             h.add_assign(u2);
-            var i = s1.neg(1);
+            let i = s1.neg(1);
             i.add_assign(s2);
             if (h.normalizes_to_zero_var()) {
                 if (i.normalizes_to_zero_var()) {
@@ -361,7 +361,7 @@ module {
             };
             let i2 = i.sqr();
             let h2 = h.sqr();
-            var h3 = h.add(h2);
+            var h3 = h.mul(h2);
             h.mul_assign(b.z);
             switch(rzr) {
                 case null {};
@@ -403,11 +403,11 @@ module {
             let u2 = b.x.mul(zz);
             let s1 = a.y.clone();
             s1.normalize_weak();
-            var s2 = b.y.mul(zz);
-            s2 := s2.mul(a.z);
+            let s2 = b.y.mul(zz);
+            s2.mul_assign(a.z);
             var t = u1.clone();
             t.add_assign(u2);
-            var m = s1.clone();
+            let m = s1.clone();
             m.add_assign(s2);
             var rr = t.sqr();
             var m_alt = u2.neg(1);
@@ -422,7 +422,7 @@ module {
             m_alt.cmov(m, not degenerate);
 
             var n = m_alt.sqr();
-            var q = n.add(t);
+            var q = n.mul(t);
 
             n := n.sqr();
             n.cmov(m, degenerate);
@@ -774,9 +774,9 @@ module {
 
     public func jacobianStatic(a: JacobianStatic): Jacobian {
         let ret = Jacobian();
-        ret.x.assign_mut(Field.new(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7]));
-        ret.y.assign_mut(Field.new(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7]));
-        ret.z.assign_mut(Field.new(a.z[0], a.z[1], a.z[2], a.z[3], a.z[4], a.z[5], a.z[6], a.z[7]));
+        ret.x.assign_mut(Field.new_raw(a.x[0], a.x[1], a.x[2], a.x[3], a.x[4], a.x[5], a.x[6], a.x[7], a.x[8], a.x[9]));
+        ret.y.assign_mut(Field.new_raw(a.y[0], a.y[1], a.y[2], a.y[3], a.y[4], a.y[5], a.y[6], a.y[7], a.y[8], a.y[9]));
+        ret.z.assign_mut(Field.new_raw(a.z[0], a.z[1], a.z[2], a.z[3], a.z[4], a.z[5], a.z[6], a.z[7], a.z[8], a.z[9]));
         ret.infinity := a.infinity;
         ret
     };

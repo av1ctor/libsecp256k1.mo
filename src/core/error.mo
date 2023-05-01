@@ -8,5 +8,6 @@ module {
         #InvalidInputLength;
         #TweakOutOfRange;
         #InvalidAffine;
+        #NotFound;
     };
 };

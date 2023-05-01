@@ -12,6 +12,8 @@ import Utils "utils";
 import Subtle "../subtle/lib";
 import Blob "mo:base/Blob";
 import Nat8 "mo:base/Nat8";
+import Text "mo:base/Text";
+import Char "mo:base/Char";
 
 module {
     type Field = Field.Field;
@@ -37,7 +39,7 @@ module {
         return Array.freeze(pre_g);
     };
 
-    public func calcPreGFast(
+    public func loadPreG(
         pre_g: Blob
     ): [AffineStorage] {
         let arr = Blob.toArray(pre_g);
@@ -50,7 +52,7 @@ module {
                 | Nat32.fromNat(Nat8.toNat(arr[ofs+3])) << 24;
         };
 
-        let res = Array.tabulateVar<AffineStorage>(ECMULT_TABLE_SIZE_G, func (i) {
+        let res = Array.tabulate<AffineStorage>(ECMULT_TABLE_SIZE_G, func (i) {
             let offset = i * 2 * 8 * 4;
             let af = Group.AffineStorage();
             af.x.n := Array.tabulateVar<Nat32>(8, func (j) {
@@ -63,7 +65,7 @@ module {
             return af;
         });
 
-        return Array.freeze(res);
+        return res;
     };
 
     /// Context for accelerating the computation of a*P + b*G.
@@ -257,13 +259,123 @@ module {
         infinity = false;
     };
 
-    /// Context for accelerating the computation of a*G.
-    public class ECMultGenContext() {
-        public var prec = Array.tabulateVar<[var AffineStorage]>(
+    func _calcPreC(
+    ): [[AffineStorage]] {
+        let affine_g = Group.affineStatic(Group.AFFINE_G);
+        
+        let gj = Group.Jacobian();
+        gj.set_ge(affine_g);
+
+        // Construct a group element with no known corresponding scalar (nothing up my sleeve).
+        let nums_32: [Nat8] = Array.map<Char, Nat8>(
+            Iter.toArray(Text.toIter("The scalar for this x is unknown")), 
+            func c = Nat8.fromNat(Nat32.toNat(Char.toNat32(c)))
+        );
+        let nums_x = Field.Field();
+        assert(nums_x.set_b32(nums_32, 0));
+        let nums_ge = Group.Affine();
+        assert(nums_ge.set_xo_var(nums_x, false));
+        var nums_gej = Group.Jacobian();
+        nums_gej.set_ge(nums_ge);
+        nums_gej := nums_gej.add_ge_var(affine_g, null);
+
+        // Compute prec.
+        let precj = Array.tabulateVar<Group.Jacobian>(1024, func i = Group.Jacobian());
+        var gbase = gj.clone();
+        var numsbase = nums_gej.clone();
+        for(j in Iter.range(0, 63)) { // 0..64
+            precj[j * 16].assign_mut(numsbase);
+            for(i in Iter.range(1, 15)) { // 1..16
+                precj[j * 16 + i] := precj[j * 16 + i - 1].add_var(gbase, null);
+            };
+            for(_ in Iter.range(0, 3)) { // 0..4
+                gbase := gbase.double_var(null);
+            };
+            numsbase := numsbase.double_var(null);
+            if(j == 62) {
+                numsbase := numsbase.neg();
+                numsbase := numsbase.add_var(nums_gej, null);
+            };
+        };
+
+        let prec = Array.tabulate<[var AffineStorage]>(
             64, func i = Array.tabulateVar<AffineStorage>(
                 16, func i = Group.AffineStorage()));
-        public var blind = Scalar.Scalar();
-        public var initial = Group.Jacobian();
+        
+        let prec_ = set_all_gej_var(Array.freeze(precj));
+
+        for(j in Iter.range(0, 63)) { // 0..64
+            for(i in Iter.range(0, 15)) { // 0..16
+                let pg = Group.into_as(prec_[j * 16 + i]);
+                prec[j][i] := pg;
+            };
+        };
+
+        return Array.map<[var AffineStorage], [AffineStorage]>(prec, func e = Array.freeze(e));
+    };
+
+    public func loadPrec(
+        prec: Blob
+    ): [[AffineStorage]] {
+        let arr = Blob.toArray(prec);
+        assert(arr.size() == (64*16) * 2 * 8 * 4);
+
+        let _leArrayToNat32 = func (ofs: Nat): Nat32 {
+            return Nat32.fromNat(Nat8.toNat(arr[ofs+0])) 
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+1])) << 8 
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+2])) << 16
+                | Nat32.fromNat(Nat8.toNat(arr[ofs+3])) << 24;
+        };
+
+        let res = Array.tabulate<[AffineStorage]>(64, func (j) {
+            let rowofs = j * 16 * 2 * 8 * 4;
+            let res = Array.tabulate<AffineStorage>(16, func (i) {
+                let offset = rowofs + i * 2 * 8 * 4;
+                let af = Group.AffineStorage();
+                af.x.n := Array.tabulateVar<Nat32>(8, func (j) {
+                    _leArrayToNat32(offset + ((8-1) * 4) - (j * 4));
+                });
+                af.y.n := Array.tabulateVar<Nat32>(8, func (j) {
+                    _leArrayToNat32(offset + (8 * 4) + ((8-1) * 4) - (j * 4));
+                });
+                
+                return af;
+            });
+        });
+
+        return res;
+    };
+
+    /// Context for accelerating the computation of a*G.
+    public class ECMultGenContext(
+        _prec: ?[[AffineStorage]]
+    ) {
+        public let blind = Scalar.Scalar();
+        blind.set(GEN_BLIND);
+        public let initial = Group.jacobianStatic(GEN_INITIAL);
+
+        public let prec: [[AffineStorage]] = switch(_prec) {
+            case (null) _calcPreC(); 
+            case (?tb) tb;
+        };
+
+        public func ecmult_gen(
+            r: Jacobian, 
+            gn: Scalar
+        ) {
+            let adds = Group.AffineStorage();
+            r.assign_mut(initial);
+            let gnb = gn.add(blind);
+
+            for(j in Iter.range(0, 63)) { // 0..64
+                let bits = gnb.bits(Nat64.fromNat(j * 4), 4);
+                for(i in Iter.range(0, 15)) { // 0..16
+                    adds.cmov(prec[j][i], Nat32.fromNat(i) == bits);
+                };
+                let add = Group.from_as(adds);
+                r.assign_mut(r.add_ge(add));
+            };
+        };
     };
 
     func odd_multiples_table_globalz_windowa(

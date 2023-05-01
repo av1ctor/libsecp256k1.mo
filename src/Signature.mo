@@ -12,6 +12,14 @@ module {
     ) {
         public let r = r_;
         public let s = s_;
+
+        public func serialize(
+        ): [Nat8] {
+            let ret = Array.tabulateVar<Nat8>(64, func i = 0: Nat8);
+            r.fill_b32(ret, 0);
+            s.fill_b32(ret, 32);
+            return Array.freeze(ret);
+        };
     };
 
     /// Parse an possibly overflowing signature.
@@ -55,5 +63,4 @@ module {
 
         return #ok(Signature(r, s));
     };
-
-};
+}

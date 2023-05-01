@@ -5,13 +5,15 @@ import Utils "core/utils";
 import Field "core/field";
 import Error "core/error";
 import Group "core/group";
+import Ecmult "core/ecmult";
+import SecretKey "SecretKey";
 
 module {
     public class PublicKey(
         affine_: Group.Affine
     ) {
         public let affine = affine_;
-        
+
         public func serialize(
         ): [Nat8] {
             let ret = Array.tabulateVar<Nat8>(65, func i = 0);
@@ -42,6 +44,17 @@ module {
 
             return Array.freeze(ret);
         }
+    };
+
+    public func from_secret_key_with_context(
+        seckey: SecretKey.SecretKey,
+        context: Ecmult.ECMultGenContext,
+    ): PublicKey {
+        let pj = Group.Jacobian();
+        context.ecmult_gen(pj, seckey.scalar);
+        let p = Group.Affine();
+        p.set_gej(pj);
+        return PublicKey(p);
     };
 
     public func parse(
