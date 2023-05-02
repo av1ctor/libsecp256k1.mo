@@ -7,10 +7,10 @@ let packages = [
       dependencies = [] : List Text
     },
     { 
-      name = "matchers", 
-      repo = "https://github.com/kritzcreek/motoko-matchers", 
-      version = "v1.3.0", 
-      dependencies = ["base"]
+        name = "testing", 
+        version = "main", 
+        repo = "https://github.com/av1ctor/testing.mo",
+        dependencies = [] : List Text
     },
 ] : List Package
 
