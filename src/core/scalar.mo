@@ -21,7 +21,8 @@ module {
 
     let MaxU32: Nat32 = 0xffff_ffff;
 
-    let SECP256K1_N: [Nat32] = [0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF];
+    let SECP256K1_N: [Nat32] = [
+        0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF];
     let SECP256K1_N_C_0: Nat32 = 0x2FC9BEBF;
     let SECP256K1_N_C_1: Nat32 = 0x402DA173;
     let SECP256K1_N_C_2: Nat32 = 0x50B75FC4;
@@ -2530,8 +2531,9 @@ module {
         };
 
         public func add(other: Scalar): Scalar {
-            add_assign(other);
-            clone()
+            let ret = clone();
+            ret.add_assign(other);
+            ret
         };
 
         public func add_assign(other: Scalar) {
@@ -2562,9 +2564,9 @@ module {
         };
 
         public func neg_unmut(): Scalar {
-            let value = clone();
-            value.neg_mut();
-            value
+            let ret = clone();
+            ret.neg_mut();
+            ret
         };
 
     };
@@ -2665,14 +2667,10 @@ module {
         (t0, t1, c2, n)
     };
 
-    
-
     /// Create a scalar from an unsigned integer.
     public func from_int(v: Nat32): Scalar {
         let ret = Scalar();
         ret.set_int(v);
         ret
     };
-
-
 };
