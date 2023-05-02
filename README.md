@@ -1,10 +1,8 @@
 # libsecp256k1
-A pure Motoko Implementation of secp256k1. 
+Motoko port of libsecp256k1 (https://github.com/paritytech/libsecp256k1)
 
-Forked from https://github.com/mix-labs/libsecp256k1
-
-## Reference
-* https://github.com/paritytech/libsecp256k1
+## References
+Forked from https://github.com/mix-labs/libsecp256k1 (abandoned?)
 
 ## TODO
 - [ ] Port the missing functions
